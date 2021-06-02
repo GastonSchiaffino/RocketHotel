@@ -10,7 +10,6 @@ public class Room {
     private String description;
 
     //Constructor
-
     public Room(){
     }
 
@@ -23,7 +22,6 @@ public class Room {
     }
 
     //Getters and Setters
-
     public int getIdRoom() {
         return idRoom;
     }

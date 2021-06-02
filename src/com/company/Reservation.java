@@ -13,7 +13,6 @@ public class Reservation {
     private boolean reserved;
 
     ///Constructores
-
     public Reservation(){
     }
 
@@ -83,8 +82,6 @@ public class Reservation {
     public void setReserved(boolean reserved) {
         this.reserved = reserved;
     }
-
-
 
     ///Metodos
 
