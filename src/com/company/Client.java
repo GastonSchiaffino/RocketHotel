@@ -8,7 +8,6 @@ public class Client extends User{
     List<Reservation> reservations;
 
     //Constructores
-
     public Client(){
         super();
     }
@@ -20,7 +19,6 @@ public class Client extends User{
     }
 
     //Getter and Setter
-
     public boolean isVip() {
         return vip;
     }
