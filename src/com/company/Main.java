@@ -7,6 +7,9 @@ public class Main {
 
     public static void main(String[] args) {
         ///Menu
+        User user = new User();
+       // user.register();
+
         Scanner scanner= new Scanner(System.in);
         boolean salir= false;
         int opcion;
@@ -14,17 +17,19 @@ public class Main {
         do {
             try {
                 System.out.println("Menu: \n");
-                System.out.println("Ingresar: ");
+                System.out.println("1)Login.\n2)Registrarse.\n\nOpcion: ");
                 opcion = scanner.nextInt();
 
                 switch (opcion) {
                     case 1:
-                        System.out.println("Ayuda");
+                        System.out.println("LOGIN.\n");
+                        System.out.println(user.login());
+                        System.out.println(user.toString());
                         salir= true;
                         break;
 
                     case 2:
-                        System.out.println("Ayuda2");
+                        System.out.println("REGISTRARSE.\n");
                         salir= true;
                         break;
 
@@ -38,12 +43,6 @@ public class Main {
             }
         }
         while(!salir);
-
-    User user = new User();
-
-    user.register();
-    System.out.println(user.login());
-    System.out.println(user.toString());
 
     }
 }

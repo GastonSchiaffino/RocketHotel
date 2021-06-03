@@ -137,29 +137,42 @@ public class User {
 
     public boolean login(){
         Scanner scanner = new Scanner(System.in);
+        boolean aux= false;
+        boolean loggedIn= false;
         String insert = null;
-        System.out.println("Ingresar usuario o E-Mail:");
-        do {
-            if(insert == null){
-            insert = scanner.nextLine();
-            }else{
-                System.out.println("El usuario o mail ingresado no existe en nuestro sistema. Ingrese nuevamente");
-                insert = scanner.nextLine();
-            }
 
-            while (insert.equals(this.userName) || insert.equals(this.emailAddress)) {
-                String key;
-                System.out.println("Ingresar contraseña:");
-                key = scanner.nextLine();
-                if(key.equals(this.password)) {
-                    System.out.println("Logueo exitoso");
-                    return true;
-                }else{
-                    System.out.println("Contraseña incorrecta. Vuelva a ingresar o presione ESC para salir.");
+        do {
+            System.out.println("Ingresar usuario o E-Mail:");
+            insert = scanner.nextLine();
+            if(insert.equals(this.userName) || insert.equals(this.emailAddress)){
+                while(!aux){
+                    String key;
+                    System.out.println("Ingresar contraseña:");
+                    key = scanner.nextLine();
+                    if(key.equals(this.password)) {
+                        System.out.println("Logueo exitoso.");
+                        aux = true;
+                        return loggedIn= true;
+
+                    }
+                    else{
+                        System.out.println("Contraseña incorrecta. Presione 'n' para salir o cualquier otra tecla para continuar.");
+                        insert= scanner.nextLine();
+                        if(insert.equals("n")){
+                            aux= true;
+                        }
+                    }
                 }
             }
-        }while (insert != this.userName || insert != this.emailAddress);
-        return false;
+            else{
+                System.out.println("El usuario o mail ingresado no existe en nuestro sistema. Presione 'n' para salir o cualquier otra tecla para continuar.");
+                insert= scanner.nextLine();
+                if(insert.equals("n")){
+                    aux= true;
+                }
+            }
+        }while (!aux);
+        return loggedIn;
     }
 
 }
