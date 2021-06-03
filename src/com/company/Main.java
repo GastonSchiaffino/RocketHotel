@@ -42,7 +42,7 @@ public class Main {
     User user = new User();
 
     user.register();
-
+    System.out.println(user.login());
     System.out.println(user.toString());
 
     }
