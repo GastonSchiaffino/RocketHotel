@@ -139,7 +139,7 @@ public class User {
         Scanner scanner = new Scanner(System.in);
         boolean aux= false;
         boolean loggedIn= false;
-        String insert = null;
+        String insert;
 
         do {
             System.out.println("Ingresar usuario o E-Mail:");
@@ -152,7 +152,7 @@ public class User {
                     if(key.equals(this.password)) {
                         System.out.println("Logueo exitoso.");
                         aux = true;
-                        return loggedIn= true;
+                        loggedIn= true;
 
                     }
                     else{
