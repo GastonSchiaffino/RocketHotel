@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.List;
 
-public class Client extends User{
+public class Client extends User implements ReservationStatus,Discount {
     ///Atributos
     boolean vip;
     List<Reservation> reservations;

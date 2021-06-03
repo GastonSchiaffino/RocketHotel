@@ -39,7 +39,11 @@ public class Main {
         }
         while(!salir);
 
+    User user = new User();
 
+    user.register();
+
+    System.out.println(user.toString());
 
     }
 }
