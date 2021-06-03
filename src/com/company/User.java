@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class User {
@@ -101,6 +102,21 @@ public class User {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    ///Equal y Hascode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return dni.equals(user.dni) && userName.equals(user.userName) && emailAddress.equals(user.emailAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dni, userName, emailAddress);
     }
 
     ///Metodos
