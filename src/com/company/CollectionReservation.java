@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ListReservation {
+public class CollectionReservation {
     ///Atributos
-    private Collection<Reservation> collectionReservation= new ArrayList<>();
+    private List<Reservation> collectionReservation= new ArrayList<>();
 
     ///Constructores
-    public ListReservation(){
+    public CollectionReservation(){
     }
 
-    public ListReservation(Collection<Reservation> collectionReservation) {
+    public CollectionReservation(List<Reservation> collectionReservation) {
         this.collectionReservation = collectionReservation;
     }
 
     ///Getter and Setter
-    public Collection<Reservation> getCollectionReservation() {
+    public List<Reservation> getCollectionReservation() {
         return collectionReservation;
     }
 
-    public void setCollectionReservation(Collection<Reservation> collectionReservation) {
+    public void setCollectionReservation(List<Reservation> collectionReservation) {
         this.collectionReservation = collectionReservation;
     }
 
