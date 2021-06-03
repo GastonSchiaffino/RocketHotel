@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Scanner;
+
 public class User {
     ///Atributos
     private String name;
@@ -102,4 +104,34 @@ public class User {
     }
 
     ///Metodos
+
+    public void register(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Nombre: ");
+        this.name = scanner.nextLine();
+        System.out.println("Apellido: ");
+        this.surname = scanner.nextLine();
+        System.out.println("DNI: ");
+        this.dni = scanner.nextLine();
+        System.out.println("Género: ");
+        this.gender = scanner.nextLine();
+        System.out.println("País de Origen: ");
+        this.origin = scanner.nextLine();
+        System.out.println("Dirección: ");
+        this.address = scanner.nextLine();
+        System.out.println("Nombre de usuario: ");
+        this.userName = scanner.nextLine();
+        System.out.println("Contraseña: ");
+        this.password = scanner.nextLine();
+        System.out.println("E-Mail: ");
+        this.emailAddress = scanner.nextLine();
+    }
+    @Override
+    public String toString(){
+        return "Datos de usuario: " + "\n Nombre: " + this.name + "\n Apellido: " + this. surname +
+                "\n Dni: " +this.dni + "\n Género: " +this. gender + "\n País de Origen: " + this.origin +
+                "\n Dirección : " + this.address + "\n Nombre de usuario : " + this.userName +
+                "\n Contraseña : " + this.password + "\n E-Mail : " + this.emailAddress;
+    }
 }
