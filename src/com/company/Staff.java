@@ -1,6 +1,6 @@
 package com.company;
 
-public class Staff {
+public class Staff extends User{
     ///Atributos
     private boolean permissionUser;
     private double salary;
@@ -8,9 +8,11 @@ public class Staff {
 
     ///Constructores
     public Staff(){
+        super();
     }
 
-    public Staff(boolean permissionUser, double salary, int antiquity) {
+    public Staff(String name, String surname, String dni, String gender, String origin, String address, String userName, String password, String emailAddress, boolean permissionUser, double salary, int antiquity) {
+        super(name, surname, dni, gender, origin, address, userName, password, emailAddress);
         this.permissionUser = permissionUser;
         this.salary = salary;
         this.antiquity = antiquity;
