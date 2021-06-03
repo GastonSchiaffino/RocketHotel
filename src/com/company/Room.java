@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Objects;
+
 public class Room {
 
     //Atributos
@@ -19,6 +21,22 @@ public class Room {
         this.capacity = capacity;
         this.priceForDay = priceForDay;
         this.description = description;
+    }
+
+    ///Equal and hascode
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return idRoom == room.idRoom;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idRoom);
     }
 
     //Getters and Setters

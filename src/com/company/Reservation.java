@@ -1,6 +1,7 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Reservation {
     ///Atributos
@@ -81,6 +82,21 @@ public class Reservation {
 
     public void setReserved(boolean reserved) {
         this.reserved = reserved;
+    }
+
+    ///Equal y hascode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return idRoom == that.idRoom && reservationNumber == that.reservationNumber && dni.equals(that.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dni, idRoom, reservationNumber);
     }
 
     ///Metodos
