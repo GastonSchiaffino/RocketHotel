@@ -44,5 +44,15 @@ public class Staff extends User{
     }
 
     ///Metodos
-
+    public Client searchClient(String dni, CollectionUser users){
+        Client client= new Client();
+        for (User x: users.collectionUser) {
+            if(users.collectionUser instanceof Client){
+                if (x.getDni().equals(dni)){
+                    client= (Client)x;
+                }
+            }
+        }
+        return client;
+    }
 }

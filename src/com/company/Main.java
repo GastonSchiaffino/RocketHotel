@@ -21,21 +21,17 @@ public class Main {
                 opcion = scanner.nextInt();
 
                 switch (opcion) {
-                    case 1:
+                    case 1 -> {
                         System.out.println("LOGIN.\n");
                         System.out.println(user.login());
                         System.out.println(user.toString());
-                        salir= true;
-                        break;
-
-                    case 2:
+                        salir = true;
+                    }
+                    case 2 -> {
                         System.out.println("REGISTRARSE.\n");
-                        salir= true;
-                        break;
-
-                    default:
-                        System.out.println("\nOpcion incorrecta.\n");
-                        break;
+                        salir = true;
+                    }
+                    default -> System.out.println("\nOpcion incorrecta.\n");
                 }
             }catch(InputMismatchException e){
                 System.out.println("\nSe debe ingresar un numero.\n");
