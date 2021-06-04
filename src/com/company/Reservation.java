@@ -100,5 +100,10 @@ public class Reservation {
     }
 
     ///Metodos
+    @Override
+    public String toString(){
+        return "Reserva: " +  "\n Dni de Cliente " +this.dni +  "Nro de Habitación: " +  this.idRoom +  "Nro de Reserva: " + this.reservationNumber +
+                "Hora de entrada: " +this.checkIn +  "Hora de Salida: " + this.checkOut;
+    }
 
 }
