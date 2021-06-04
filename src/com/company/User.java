@@ -143,6 +143,7 @@ public class User {
         System.out.println("E-Mail: ");
         this.emailAddress = scanner.nextLine();
     }
+
     @Override
     public String toString(){
         return "Datos de usuario: " + "\n Nombre: " + this.name + "\n Apellido: " + this. surname +
