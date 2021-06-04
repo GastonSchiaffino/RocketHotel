@@ -46,8 +46,8 @@ public class Staff extends User{
     ///Metodos
     public Client searchClient(String dni, CollectionUser users){
         Client client= new Client();
-        for (User x: users.collectionUser) {
-            if(users.collectionUser instanceof Client){
+        for (User x: users.getCollectionUser()) {
+            if(users.getCollectionUser() instanceof Client){
                 if (x.getDni().equals(dni)){
                     client= (Client)x;
                 }
@@ -55,4 +55,32 @@ public class Staff extends User{
         }
         return client;
     }
+
+    /*public Reservation searchReservation(String dni, CollectionReservation reservations){
+        Reservation reservation = new Reservation();
+        for (Reservation x: reservations.getCollectionReservation()) {
+                if (x.getDni().equals(dni)){
+                    reservation= x;
+                }
+            }
+        return reservation;
+    }*/
+
+    public Reservation searchReservation(Object o, CollectionReservation reservations){
+        Reservation reservation = new Reservation();
+
+        for (Reservation x: reservations.getCollectionReservation()) {
+            if (o instanceof String) {
+                if (x.getDni().equals(o)) {
+                    reservation = x;
+                }
+            }else if(o instanceof Integer){
+                if(x.getReservationNumber() == (int)o){
+                    reservation = x;
+                }
+            }
+        }
+        return reservation;
+    }
+
 }

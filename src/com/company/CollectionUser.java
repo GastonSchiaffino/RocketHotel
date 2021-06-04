@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CollectionUser {
     ///Atributos
-    public List<User> collectionUser = new ArrayList<>();
+    private List<User> collectionUser = new ArrayList<>();
 
     ///Constructores
     public CollectionUser(){
