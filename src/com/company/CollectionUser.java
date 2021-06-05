@@ -64,6 +64,14 @@ public class CollectionUser {
         user.setEmailAddress(scanner.nextLine());
     }
 
+    public void addUser(User user){
+        listUser.add(user);
+    }
+
+    public void removeUser(User user){
+        listUser.remove(user);
+    }
+
     public User searchUser(String dni){
         User user= new User();
         for (User x: listUser) {
@@ -133,6 +141,7 @@ public class CollectionUser {
         }
     }
 
-
+    public void orderFood(){
+    }
 
 }
