@@ -1,15 +1,22 @@
 package com.company;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ///Menu
         User user = new User();
+        Client client = new Client();
        // user.register();
-
         Scanner scanner= new Scanner(System.in);
         boolean salir= false;
         int opcion;
@@ -41,4 +48,5 @@ public class Main {
         while(!salir);
 
     }
+
 }

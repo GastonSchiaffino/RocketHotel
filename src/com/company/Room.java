@@ -81,4 +81,9 @@ public class Room {
     }
 
     ///Metodos
+
+    public String toString(){
+        return "Habitación: " + this.idRoom + "\nEstado: " + this.available + "\nCapacidad: " +
+                this.capacity + "\nPrecio por Día: " + this.priceForDay + "\nDescripción: " + this.description;
+    }
 }
