@@ -15,8 +15,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
         ///Menu
         User user = new User();
-        Client client = new Client();
+
+        CollectionUser users = new CollectionUser();
+
        // user.register();
+
         Scanner scanner= new Scanner(System.in);
         boolean salir= false;
         int opcion;
@@ -36,6 +39,9 @@ public class Main {
                     }
                     case 2 -> {
                         System.out.println("REGISTRARSE.\n");
+                        Client client = new Client();
+                        users.register(client);
+                        users.addUser(client);
                         salir = true;
                     }
                     default -> System.out.println("\nOpcion incorrecta.\n");
