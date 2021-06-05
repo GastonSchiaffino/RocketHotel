@@ -36,6 +36,9 @@ public class Client extends User implements ReservationStatus,Discount {
     }
 
     //Metodos
+    public String toString(){
+        return super.toString() + "VIP: " + this.vip;
+    }
 
 
 }
