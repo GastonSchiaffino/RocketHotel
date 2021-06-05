@@ -46,31 +46,6 @@ public class Staff extends User{
     ///Metodos
 
 
-    /*public Reservation searchReservation(String dni, CollectionReservation reservations){
-        Reservation reservation = new Reservation();
-        for (Reservation x: reservations.getCollectionReservation()) {
-                if (x.getDni().equals(dni)){
-                    reservation= x;
-                }
-            }
-        return reservation;
-    }*/
 
-    public Reservation searchReservation(Object o, CollectionReservation reservations){
-        Reservation reservation = new Reservation();
-
-        for (Reservation x: reservations.getCollectionReservation()) {
-            if (o instanceof String) {
-                if (x.getDni().equals(o)) {
-                    reservation = x;
-                }
-            }else if(o instanceof Integer){
-                if(x.getReservationNumber() == (int)o){
-                    reservation = x;
-                }
-            }
-        }
-        return reservation;
-    }
 
 }
