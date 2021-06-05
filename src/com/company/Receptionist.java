@@ -23,4 +23,6 @@ public class Receptionist extends Staff{
     }
 
     ///Metodos
+
+
 }
