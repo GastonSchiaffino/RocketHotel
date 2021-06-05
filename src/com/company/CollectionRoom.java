@@ -5,24 +5,25 @@ import java.util.List;
 
 public class CollectionRoom {
     ///Atributos
-    public List<Room> collectionRoom = new ArrayList<>();
+    public List<Room> listRoom = new ArrayList<>();
 
     ///Constructores
     public CollectionRoom(){
     }
 
     public CollectionRoom(List<Room> collectionRoom) {
-        this.collectionRoom = collectionRoom;
+        this.listRoom = collectionRoom;
     }
 
     ///Getter and Setter
 
-    public List<Room> getCollectionRoom() {
-        return collectionRoom;
+
+    public List<Room> getListRoom() {
+        return listRoom;
     }
 
-    public void setCollectionRoom(List<Room> collectionRoom) {
-        this.collectionRoom = collectionRoom;
+    public void setListRoom(List<Room> listRoom) {
+        this.listRoom = listRoom;
     }
 
     ///Metodos
@@ -34,8 +35,8 @@ public class CollectionRoom {
         Room room5 = new Room();Room room6 = new Room(); Room room7 = new Room(); Room room8 = new Room();
         Room room9 = new Room(); Room room10 = new Room(); Room room11 = new Room(); Room room12 = new Room();
 
-        collectionRoom.add(room1);collectionRoom.add(room2);collectionRoom.add(room3);collectionRoom.add(room4); collectionRoom.add(room5);collectionRoom.add(room6);
-        collectionRoom.add(room7);collectionRoom.add(room8); collectionRoom.add(room9);collectionRoom.add(room10);collectionRoom.add(room11);collectionRoom.add(room12);
+        listRoom.add(room1);listRoom.add(room2);listRoom.add(room3);listRoom.add(room4); listRoom.add(room5);listRoom.add(room6);
+        listRoom.add(room7);listRoom.add(room8); listRoom.add(room9);listRoom.add(room10);listRoom.add(room11);listRoom.add(room12);
     }
 
 
