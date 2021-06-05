@@ -28,6 +28,7 @@ public class CollectionUser {
     ///Metodos
     public User loginUser(String userName, String password){
         User user= new User();
+        user= null;
 
         for (User x: listUser) {
             if(userName.equals(x.getUserName()) || userName.equals(x.getEmailAddress())){
