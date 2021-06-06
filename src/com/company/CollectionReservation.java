@@ -52,4 +52,8 @@ public class CollectionReservation {
         }
         return reservation;
     }
+
+   /* public Reservation makeReservation(int idRoom){
+
+    }*/
 }
