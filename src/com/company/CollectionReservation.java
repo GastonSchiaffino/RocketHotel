@@ -1,5 +1,6 @@
 package com.company;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,30 +27,35 @@ public class CollectionReservation {
     }
 
     ///Metodos
-    public Reservation searchReservation(String dni, CollectionReservation reservations){
+    public Reservation searchReservation(int numberReservation){
         Reservation reservation = new Reservation();
-        for (Reservation x: reservations.getListReservation()) {
-            if (x.getDni().equals(dni)){
+        for (Reservation x: listReservation) {
+            if (x.getReservationNumber() == numberReservation){
                 reservation= x;
             }
         }
         return reservation;
     }
 
-    public Reservation searchReservation(Object o, CollectionReservation reservations){
-        Reservation reservation = new Reservation();
+    public  List<Reservation> searchReservationHistory(String dni) {
+        List<Reservation> reservations = new ArrayList<>();
+        for (Reservation x : listReservation) {
+            if (x.getDni().equals(dni)) {
+                reservations.add(x);
+            }
+        }
+        return reservations;
+    }
 
-        for (Reservation x: reservations.getListReservation()) {
-            if (o instanceof String) {
-                if (x.getDni().equals(o)) {
-                    reservation = x;
-                }
-            }else if(o instanceof Integer){
-                if(x.getReservationNumber() == (int)o){
-                    reservation = x;
+    public  List<Reservation> searchReservationCurrent(String dni) {
+        List<Reservation> reservations = new ArrayList<>();
+        for (Reservation x : listReservation) {
+            if (x.getDni().equals(dni)) {
+                if (x.isReserved()) {
+                    reservations.add(x);
                 }
             }
         }
-        return reservation;
+        return reservations;
     }
 }
