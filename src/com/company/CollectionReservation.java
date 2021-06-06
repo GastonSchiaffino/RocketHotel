@@ -27,6 +27,10 @@ public class CollectionReservation {
     }
 
     ///Metodos
+    public void addReservation(Reservation reservation){
+        listReservation.add(reservation);
+    }
+
     public Reservation searchReservation(int numberReservation){
         Reservation reservation = new Reservation();
         for (Reservation x: listReservation) {
@@ -59,9 +63,8 @@ public class CollectionReservation {
         return reservations;
     }
 
+
     public void makeReservation(int idRoom, Client client){
         Reservation reservation= new Reservation();
-
-
     }
 }

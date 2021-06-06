@@ -22,6 +22,7 @@ public class Main {
         ///Menu
         CollectionUser listUser = new CollectionUser();
         CollectionRoom listRoom= new CollectionRoom();
+        CollectionReservation listReservation= new CollectionReservation();
 
         listRoom.loadRooms();
 
@@ -76,7 +77,7 @@ public class Main {
                                             }
                                             case 2 -> {
                                                 System.out.println("Habitaciones disponibles:\n");
-                                                listRoom.availableRoom();
+                                                listRoom.loadRooms();
                                                 System.out.println("");
                                                 option= scanner.nextInt();
                                                 if(0<option && option<13){
@@ -87,13 +88,16 @@ public class Main {
                                                     Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false, true);
                                                 }
 
-
                                             }
                                             case 3 -> {
+                                                System.out.println("Reserva actual:\n");
 
                                             }
                                             case 4 -> {
-
+                                                System.out.println("Historial de reservas:\n");
+                                                List <Reservation> reservationsClient= new ArrayList<>();
+                                                reservationsClient= listReservation.searchReservationHistory(user.getDni());
+                                                reservationsClient.forEach(System.out::println);
                                             }
                                             case 5 -> {
 
