@@ -20,6 +20,12 @@ public class Main {
     public static void main(String[] args){
         ///Menu
         CollectionUser listUser = new CollectionUser();
+        CollectionRoom listRoom= new CollectionRoom();
+
+        listRoom.loadRooms();
+
+        listRoom.availableRoom();
+
 
         Scanner scanner = new Scanner(System.in);
 
@@ -46,18 +52,30 @@ public class Main {
                             String password = scanner.nextLine();
                             User user = listUser.loginUser(userName, password);
                             if (user != null) {
-                                System.out.println(user.toString());
                                 if (user instanceof Client) {
                                     System.out.println("Usuario " + user.getUserName());
-                                    System.out.println("\n1)Ver habitaciones disponibles.\n2)Realizar reserva.\n3)Listados de reservas anteriores." +
-                                            "\n4)Cancelar reserva.\n5)Ver perfil.\n6)Modificar perfil.");
-                                    option = scanner.nextInt();
-                                    try{
-                                        switch (option){
-                                            case 1 -> {
+                                    System.out.println("""
 
+                                            1)Ver habitaciones.
+                                            2)Realizar reserva.
+                                            3)Reserva actual.
+                                            4)Listados de reservas anteriores.
+                                            5)Cancelar reserva.
+                                            6)Ver perfil.
+                                            7)Modificar perfil.
+
+                                            0)Salir.
+                                            """);
+                                    option = scanner.nextInt();
+                                    try {
+                                        switch (option) {
+                                            case 1 -> {
+                                                System.out.println("Habitaciones:\n");
+                                                listRoom.loadRooms();
                                             }
                                             case 2 -> {
+                                                System.out.println("Habitaciones disponibles:\n");
+
 
                                             }
                                             case 3 -> {
@@ -72,28 +90,25 @@ public class Main {
                                             case 6 -> {
 
                                             }
-                                            default -> System.out.println("\nOpcion incorrecta.\n");
+                                            case 7 -> {
                                             }
-                                     } catch (InputMismatchException e) {
-                                    System.out.println("\nSe debe ingresar un numero.\n");
-                                    scanner.next();
-                                }
+                                            default -> System.out.println("\nOpcion incorrecta.\n");
+                                        }
+                                    } catch (InputMismatchException e) {
+                                        System.out.println("\nSe debe ingresar un numero.\n");
+                                        scanner.next();
                                     }
-                                    scanner.nextLine();
                                 } else if (user instanceof Administrator) {
 
                                 } else {
-
                                 }
 
-
                                 quit = true;
-                            }
-                            else {
+                            } else {
                                 System.out.println("\nUsuario / E-mail o contraseña incorrectos. Presione 'n' para salir o cualquier otra tecla para continuar.\n");
                                 character = scanner.next().charAt(0);
-                                if(character=='n'){
-                                    quit= true;
+                                if (character == 'n') {
+                                    quit = true;
                                 }
                             }
 
