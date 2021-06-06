@@ -8,6 +8,7 @@ public class Reservation {
     private String dni;
     private int idRoom;
     private int reservationNumber;
+    private static int reservationNumberNext= 1;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private boolean cancelled;
@@ -17,10 +18,11 @@ public class Reservation {
     public Reservation(){
     }
 
-    public Reservation(String dni, int idRoom, int reservationNumber, LocalDate checkIn, LocalDate checkOut, boolean cancelled, boolean reserved) {
+    public Reservation(String dni, int idRoom, LocalDate checkIn, LocalDate checkOut, boolean cancelled, boolean reserved) {
         this.dni = dni;
         this.idRoom = idRoom;
-        this.reservationNumber = reservationNumber;
+        this.reservationNumber = reservationNumberNext;
+        reservationNumberNext++;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.cancelled = cancelled;
@@ -83,6 +85,7 @@ public class Reservation {
     public void setReserved(boolean reserved) {
         this.reserved = reserved;
     }
+
 
     ///Equal y hascode
 
