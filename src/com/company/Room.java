@@ -81,9 +81,9 @@ public class Room {
     }
 
     ///Metodos
-
+    @Override
     public String toString(){
         return "Habitación: " + this.idRoom + "\nEstado: " + this.available + "\nCapacidad: " +
-                this.capacity + "\nPrecio por Día: " + this.priceForDay + "\nDescripción: " + this.description;
+                this.capacity + "\nPrecio por Día: " + this.priceForDay + "\nDescripción: " + this.description + "\n";
     }
 }
