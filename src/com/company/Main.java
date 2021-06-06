@@ -8,6 +8,7 @@ import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -30,7 +31,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         char character;
-
+        String textInput;
         boolean quit = false;
         int option= 0;
 
@@ -59,7 +60,7 @@ public class Main {
                                             1)Ver habitaciones.
                                             2)Realizar reserva.
                                             3)Reserva actual.
-                                            4)Listados de reservas anteriores.
+                                            4)Listados de reservas.
                                             5)Cancelar reserva.
                                             6)Ver perfil.
                                             7)Modificar perfil.
@@ -75,6 +76,16 @@ public class Main {
                                             }
                                             case 2 -> {
                                                 System.out.println("Habitaciones disponibles:\n");
+                                                listRoom.availableRoom();
+                                                System.out.println("");
+                                                option= scanner.nextInt();
+                                                if(0<option && option<13){
+                                                    System.out.println("\nIngrese la fecha de ingreso: ");
+                                                    String entry= scanner.nextLine();
+                                                    System.out.println("\nIngrese la fecha de egreso: ");
+                                                    String exit= scanner.nextLine();
+                                                    Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false, true);
+                                                }
 
 
                                             }

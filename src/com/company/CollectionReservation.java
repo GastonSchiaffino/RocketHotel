@@ -53,7 +53,9 @@ public class CollectionReservation {
         return reservation;
     }
 
-   /* public Reservation makeReservation(int idRoom){
+    public void makeReservation(int idRoom, Client client){
+        Reservation reservation= new Reservation();
 
-    }*/
+
+    }
 }
