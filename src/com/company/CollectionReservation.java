@@ -60,23 +60,21 @@ public class CollectionReservation {
     }
 
     public boolean cancelledReservartion(int numberReservation){
-        Reservation reservation = new Reservation();
-        reservation=searchReservation(numberReservation);
-        if(reservation.isCancelled()==false){
+        Reservation reservation=searchReservation(numberReservation);
+        if(!reservation.isCancelled()){
             reservation.setCancelled(true);
         }
         return reservation.isCancelled();
     }
 
-    public  List<Reservation> searchReservationCurrent(LocalDate checkIn) {
-        List<Reservation> reservations = new ArrayList<>();
+    /*public  boolean searchAvailable(LocalDate checkIn, int id) {
+
         for (Reservation x : listReservation) {
-            if (checkIn.isBefore(x.getCheckIn())){
-                if (x.isReserved()) {
-                    reservations.add(x);
-                }
+            if (x.isReserved()&& x.getIdRoom() == id) {
+                if(x.getCheckIn())
+
             }
         }
         return reservations;
-    }
+    }*/
 }
