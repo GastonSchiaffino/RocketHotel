@@ -27,10 +27,6 @@ public class CollectionReservation {
     }
 
     ///Metodos
-    public void addReservation(Reservation reservation){
-        listReservation.add(reservation);
-    }
-
     public Reservation searchReservation(int numberReservation){
         Reservation reservation = new Reservation();
         for (Reservation x: listReservation) {
@@ -63,8 +59,24 @@ public class CollectionReservation {
         return reservations;
     }
 
+    public boolean cancelledReservartion(int numberReservation){
+        Reservation reservation = new Reservation();
+        reservation=searchReservation(numberReservation);
+        if(reservation.isCancelled()==false){
+            reservation.setCancelled(true);
+        }
+        return reservation.isCancelled();
+    }
 
-    public void makeReservation(int idRoom, Client client){
-        Reservation reservation= new Reservation();
+    public  List<Reservation> searchReservationCurrent(LocalDate checkIn) {
+        List<Reservation> reservations = new ArrayList<>();
+        for (Reservation x : listReservation) {
+            if (checkIn.isBefore(x.getCheckIn())){
+                if (x.isReserved()) {
+                    reservations.add(x);
+                }
+            }
+        }
+        return reservations;
     }
 }
