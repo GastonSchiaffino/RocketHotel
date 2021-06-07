@@ -28,7 +28,8 @@ public class CollectionReservation {
 
     ///Metodos
     public Reservation searchReservation(int numberReservation){
-        Reservation reservation = new Reservation();
+        Reservation reservation= null;
+
         for (Reservation x: listReservation) {
             if (x.getReservationNumber() == numberReservation){
                 reservation= x;
@@ -61,14 +62,14 @@ public class CollectionReservation {
 
     public boolean cancelledReservartion(int numberReservation){
         Reservation reservation = new Reservation();
-        reservation=searchReservation(numberReservation);
-        if(reservation.isCancelled()==false){
+        reservation= searchReservation(numberReservation);
+        if(!reservation.isCancelled()){
             reservation.setCancelled(true);
         }
         return reservation.isCancelled();
     }
 
-    public  List<Reservation> searchReservationCurrent(LocalDate checkIn) {
+    /*public  List<Reservation> searchReservationCurrent(LocalDate checkIn) {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
             if (checkIn.isBefore(x.getCheckIn())){
@@ -78,5 +79,5 @@ public class CollectionReservation {
             }
         }
         return reservations;
-    }
+    }*/
 }

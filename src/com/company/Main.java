@@ -31,16 +31,18 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        char character;
+        char character = 0;
         String textInput;
-        boolean quit = false;
         int option= 0;
+        boolean quit = false;
 
 
         do {
             try {
+                option= 0;
+                quit = false;
                 System.out.println("ROCKET HOTEL: \n");
-                System.out.println("1)Login.\n2)Registrarse.\n\nOpcion: ");
+                System.out.println("1)Login.\n2)Registrarse.\n0)Salir.\n\nOpcion: ");
                 option = scanner.nextInt();
                 scanner.nextLine();
 
@@ -85,6 +87,8 @@ public class Main {
                                                     String entry= scanner.nextLine();
                                                     System.out.println("\nIngrese la fecha de egreso: ");
                                                     String exit= scanner.nextLine();
+
+
                                                     Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false, true);
                                                 }
 
@@ -100,12 +104,31 @@ public class Main {
                                                 reservationsClient.forEach(System.out::println);
                                             }
                                             case 5 -> {
-
+                                                System.out.println("Reserva/s actual/es: ");
+                                                List <Reservation> reservationsClient= new ArrayList<>();
+                                                reservationsClient= listReservation.searchReservationCurrent(user.getDni());
+                                                reservationsClient.forEach(System.out::println);
+                                                do {
+                                                    option = scanner.nextInt();
+                                                    Reservation reservation = listReservation.searchReservation(option);
+                                                    if (reservation != null) {
+                                                        listReservation.cancelledReservartion(option);
+                                                    } else {
+                                                        System.out.println("El numero de reserva ingresado es incorrecto. Presione 's' para volver a intentarlo o cualquier otra tecla para salir.\n");
+                                                        character= scanner.next().charAt(0);
+                                                    }
+                                                }while(character=='s');
                                             }
                                             case 6 -> {
-
+                                                System.out.println("Perfil: \n");
+                                                System.out.println(user.toString());
                                             }
                                             case 7 -> {
+                                                System.out.println("Modificar datos: ");
+                                                listUser.userModify(user.getDni());
+                                            }
+                                            case 0 -> {
+                                                System.out.println("\n");
                                             }
                                             default -> System.out.println("\nOpcion incorrecta.\n");
                                         }
@@ -132,6 +155,10 @@ public class Main {
                     }
                     case 2 -> {
                         System.out.println("REGISTRARSE.\n");
+                        User user= new User();
+                        listUser.register(user);
+                        listUser.addUser(user);
+
                         quit = true;
                     }
                     case 0 -> {
