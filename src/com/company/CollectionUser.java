@@ -41,27 +41,25 @@ public class CollectionUser {
         return user;
     }
 
-    public void register(User user){
+    public User register(User user){
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Nombre: ");
         user.setName(scanner.nextLine());
         System.out.println("Apellido: ");
         user.setSurname(scanner.nextLine());
-        System.out.println("DNI: ");
-        user.setDni(scanner.nextLine());;
         System.out.println("Género: ");
         user.setGender(scanner.nextLine());;
         System.out.println("País de Origen: ");
         user.setOrigin(scanner.nextLine());;
         System.out.println("Dirección: ");
         user.setAddress(scanner.nextLine());;
-        System.out.println("Nombre de usuario: ");
-        user.setUserName(scanner.nextLine());;
         System.out.println("Contraseña: ");
         user.setPassword(scanner.nextLine());;
         System.out.println("E-Mail: ");
         user.setEmailAddress(scanner.nextLine());
+
+        return user;
     }
 
     public void addUser(User user){
@@ -73,9 +71,65 @@ public class CollectionUser {
     }
 
     public User searchUser(String dni){
-        User user= new User();
+        User user= null;
         for (User x: listUser) {
             if (x.getDni().equals(dni)){
+                user= x;
+            }
+        }
+        return user;
+    }
+
+    public Client searchClient(String dni){
+        Client client= null;
+        for (User x: listUser) {
+            if(x instanceof Client) {
+                if (x.getDni().equals(dni)) {
+                    client= (Client) x;
+                }
+            }
+        }
+        return client;
+    }
+
+    public Administrator searchAdministrator(String dni){
+        Administrator administrator= null;
+        for (User x: listUser) {
+            if(x instanceof Administrator) {
+                if (x.getDni().equals(dni)) {
+                    administrator= (Administrator) x;
+                }
+            }
+        }
+        return administrator;
+    }
+
+    public Receptionist searchReceptionist(String dni){
+        Receptionist receptionist= null;
+        for (User x: listUser) {
+            if(x instanceof Receptionist) {
+                if (x.getDni().equals(dni)) {
+                    receptionist = (Receptionist) x;
+                }
+            }
+        }
+        return receptionist;
+    }
+
+    public User searchUserAsMail(String email){
+        User user= null;
+        for (User x: listUser) {
+            if (x.getEmailAddress().equals(email)){
+                user= x;
+            }
+        }
+        return user;
+    }
+
+    public User searchUserAsUserName(String userName){
+        User user= null;
+        for (User x: listUser) {
+            if (x.getUserName().equals(userName)){
                 user= x;
             }
         }
@@ -141,7 +195,28 @@ public class CollectionUser {
         }
     }
 
-    public void orderFood(){
+    public void showListClient(){
+        for (User x:listUser) {
+            if(x instanceof Client){
+                System.out.println(x.toString());
+            }
+        }
+    }
+
+    public void showListAdministrator(){
+        for (User x:listUser) {
+            if(x instanceof Administrator){
+                System.out.println(x.toString());
+            }
+        }
+    }
+
+    public void showListRecepcionist(){
+        for (User x:listUser) {
+            if(x instanceof Receptionist){
+                System.out.println(x.toString());
+            }
+        }
     }
 
 }

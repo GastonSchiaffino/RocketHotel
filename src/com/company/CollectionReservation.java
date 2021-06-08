@@ -38,6 +38,17 @@ public class CollectionReservation {
         return reservation;
     }
 
+    public Reservation searchReservationAsDni(String dni){
+        Reservation reservation= null;
+
+        for (Reservation x: listReservation) {
+            if (x.getDni().equals(dni)){
+                reservation= x;
+            }
+        }
+        return reservation;
+    }
+
     public List<Reservation> searchReservationHistory(String dni) {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
@@ -60,6 +71,15 @@ public class CollectionReservation {
         return reservations;
     }
 
+
+    public void showListReservationCurrent(){
+        for (Reservation x:listReservation) {
+            if(x.isReserved()){
+                System.out.println(x.toString());
+            }
+        }
+    }
+  
     public boolean cancelledReservartion(int numberReservation) {
 
         Reservation reservation = searchReservation(numberReservation);
@@ -96,4 +116,5 @@ public class CollectionReservation {
         }
         return suitables;
     }
+  
 }
