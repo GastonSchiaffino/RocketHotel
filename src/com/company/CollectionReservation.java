@@ -38,6 +38,17 @@ public class CollectionReservation {
         return reservation;
     }
 
+    public Reservation searchReservationAsDni(String dni){
+        Reservation reservation= null;
+
+        for (Reservation x: listReservation) {
+            if (x.getDni().equals(dni)){
+                reservation= x;
+            }
+        }
+        return reservation;
+    }
+
     public  List<Reservation> searchReservationHistory(String dni) {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
@@ -60,28 +71,15 @@ public class CollectionReservation {
         return reservations;
     }
 
-    public boolean cancelledReservartion(int numberReservation){
-
-        Reservation reservation=searchReservation(numberReservation);
-        Reservation reservation = new Reservation();
-        reservation= searchReservation(numberReservation);
-
-        if(!reservation.isCancelled()){
-            reservation.setCancelled(true);
+    public void showListReservationCurrent(){
+        for (Reservation x:listReservation) {
+            if(x.isReserved()){
+                System.out.println(x.toString());
+            }
         }
-        return reservation.isCancelled();
     }
 
 
-    /*public  boolean searchAvailable(LocalDate checkIn, int id) {
-    /*public  List<Reservation> searchReservationCurrent(LocalDate checkIn) {
-        List<Reservation> reservations = new ArrayList<>();
-        for (Reservation x : listReservation) {
-            if (x.isReserved()&& x.getIdRoom() == id) {
-                if(x.getCheckIn())
 
-            }
-        }
-        return reservations;
-    }*/
+
 }

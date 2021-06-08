@@ -57,7 +57,7 @@ public class CollectionConsumption {
     }
 
     public Consumption searchConsumption(int id){
-        Consumption consumption= new Consumption();
+        Consumption consumption= null;
         for (Consumption x: listConsumption) {
             if (x.getIdConsumption()==(id)){
                 consumption= x;
@@ -72,6 +72,12 @@ public class CollectionConsumption {
             if (x.getIdConsumption() == (id)) {
                 x.setPrice(price);
             }
+        }
+    }
+
+    public void showListConsumition(){
+        for (Consumption x:listConsumption) {
+            System.out.println(x.toString());
         }
     }
 }
