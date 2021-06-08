@@ -6,10 +6,10 @@ import java.util.List;
 
 public class CollectionReservation {
     ///Atributos
-    private List<Reservation> listReservation= new ArrayList<>();
+    private List<Reservation> listReservation = new ArrayList<>();
 
     ///Constructores
-    public CollectionReservation(){
+    public CollectionReservation() {
     }
 
     public CollectionReservation(List<Reservation> listReservation) {
@@ -27,18 +27,18 @@ public class CollectionReservation {
     }
 
     ///Metodos
-    public Reservation searchReservation(int numberReservation){
-        Reservation reservation= null;
+    public Reservation searchReservation(int numberReservation) {
+        Reservation reservation = null;
 
-        for (Reservation x: listReservation) {
-            if (x.getReservationNumber() == numberReservation){
-                reservation= x;
+        for (Reservation x : listReservation) {
+            if (x.getReservationNumber() == numberReservation) {
+                reservation = x;
             }
         }
         return reservation;
     }
 
-    public  List<Reservation> searchReservationHistory(String dni) {
+    public List<Reservation> searchReservationHistory(String dni) {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
             if (x.getDni().equals(dni)) {
@@ -48,7 +48,7 @@ public class CollectionReservation {
         return reservations;
     }
 
-    public  List<Reservation> searchReservationCurrent(String dni) {
+    public List<Reservation> searchReservationCurrent(String dni) {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
             if (x.getDni().equals(dni)) {
@@ -60,28 +60,40 @@ public class CollectionReservation {
         return reservations;
     }
 
-    public boolean cancelledReservartion(int numberReservation){
+    public boolean cancelledReservartion(int numberReservation) {
 
-        Reservation reservation=searchReservation(numberReservation);
-        Reservation reservation = new Reservation();
-        reservation= searchReservation(numberReservation);
+        Reservation reservation = searchReservation(numberReservation);
 
-        if(!reservation.isCancelled()){
-            reservation.setCancelled(true);
+        if (reservation.isReserved()) {
+            reservation.setReserved(false);
         }
-        return reservation.isCancelled();
+        return reservation.isReserved();
     }
 
 
-    /*public  boolean searchAvailable(LocalDate checkIn, int id) {
-    /*public  List<Reservation> searchReservationCurrent(LocalDate checkIn) {
-        List<Reservation> reservations = new ArrayList<>();
-        for (Reservation x : listReservation) {
-            if (x.isReserved()&& x.getIdRoom() == id) {
-                if(x.getCheckIn())
+    public List<Room> searchRoomsForReservation(CollectionRoom rooms, LocalDate ci, LocalDate co) {
+        List<Room> suitables = new ArrayList<>();
+        boolean save;
 
+        for (Room r : rooms.getListRoom()) {
+            save=false;
+            for (Reservation x : listReservation) {
+                if (x.isReserved() && r.getIdRoom() == x.getIdRoom()) {
+                    if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co)) {
+                        save=true;
+                    } else if (ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut())) {
+                        save=true;
+                    } else if (co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn())) {
+                        save=true;
+                    } else if (ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
+                        save=true;
+                    }
+                }
+            }
+            if(!save){
+                suitables.add(r);
             }
         }
-        return reservations;
-    }*/
+        return suitables;
+    }
 }

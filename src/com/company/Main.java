@@ -89,7 +89,7 @@ public class Main {
                                                     String exit= scanner.nextLine();
 
 
-                                                    Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false, true);
+                                                    Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit),true);
                                                 }
 
                                             }
