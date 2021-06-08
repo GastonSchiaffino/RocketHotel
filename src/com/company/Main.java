@@ -95,6 +95,7 @@ public class Main {
                                                             String exit= scanner.nextLine();
 
 
+
                                                         //    Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), true);
                                                             quit= true;
                                                         }
@@ -104,6 +105,9 @@ public class Main {
                                                         System.out.println("La opcion ingresada es incorrecta. Presione 'n' para salir o cualquier otra tecla para volver a ingresar la capacidad.\n");
                                                         character= scanner.next().charAt(0);
                                                     }
+
+                                            
+
                                                 }
                                                 while (!quit && character!='n');
 
