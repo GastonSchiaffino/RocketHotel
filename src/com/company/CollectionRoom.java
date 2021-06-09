@@ -84,12 +84,12 @@ public class CollectionRoom {
         return room;
     }
 
-    public void roomModify(int idRoom){
+    public void roomModify(int idRoom) {
         Scanner scanner = new Scanner(System.in);
-        int opcion= 0;
+        int opcion = 0;
 
-        for (Room x: listRoom) {
-            if(x.getIdRoom()==(idRoom)) {
+        for (Room x : listRoom) {
+            if (x.getIdRoom() == (idRoom)) {
                 do {
                     System.out.println("Ingrese la opcion que desea modificar: \n");
                     System.out.println("1)Precio.\n2)Descripcion.\n\n0)Salir.\n\nOpcion: ");
@@ -111,7 +111,10 @@ public class CollectionRoom {
                     }
                 }
                 while (opcion != 0);
-              
+            }
+        }
+    }
+
     public void ocuppiedRoom(){
         for (Room x: listRoom) {
             if(x.getAvailable().equals(StatusRoom.OCCUPIED)){
@@ -120,5 +123,4 @@ public class CollectionRoom {
             }
         }
     }
-
 }

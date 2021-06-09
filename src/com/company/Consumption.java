@@ -61,6 +61,6 @@ public class Consumption {
     ///Metodos
     @Override
     public String toString(){
-        return this.idConsumption + ".  " + this.idConsumption + "  " + this.price;
+        return this.idConsumption + ".  " + this.description + "  $" + this.price;
     }
 }

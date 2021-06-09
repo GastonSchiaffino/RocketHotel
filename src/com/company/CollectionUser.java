@@ -41,27 +41,6 @@ public class CollectionUser {
         return user;
     }
 
-    public User register(User user){
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Nombre: ");
-        user.setName(scanner.nextLine());
-        System.out.println("Apellido: ");
-        user.setSurname(scanner.nextLine());
-        System.out.println("Género: ");
-        user.setGender(scanner.nextLine());;
-        System.out.println("País de Origen: ");
-        user.setOrigin(scanner.nextLine());;
-        System.out.println("Dirección: ");
-        user.setAddress(scanner.nextLine());;
-        System.out.println("Contraseña: ");
-        user.setPassword(scanner.nextLine());;
-        System.out.println("E-Mail: ");
-        user.setEmailAddress(scanner.nextLine());
-
-        return user;
-    }
-
     public void addUser(User user){
         listUser.add(user);
     }

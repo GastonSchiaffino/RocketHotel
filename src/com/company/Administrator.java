@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Scanner;
+
 public class Administrator extends Staff{
     ///Atributos
 
@@ -12,4 +14,31 @@ public class Administrator extends Staff{
     }
 
     ///Metodos
+    @Override
+    public void register(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Nombre: ");
+        this.setName(scanner.nextLine());
+        System.out.println("Apellido: ");
+        this.setSurname(scanner.nextLine());
+        System.out.println("Género: ");
+        this.setGender(scanner.nextLine());;
+        System.out.println("País de Origen: ");
+        this.setOrigin(scanner.nextLine());;
+        System.out.println("Dirección: ");
+        this.setAddress(scanner.nextLine());;
+        System.out.println("Contraseña: ");
+        this.setPassword(scanner.nextLine());;
+        System.out.println("E-Mail: ");
+        this.setEmailAddress(scanner.nextLine());
+        System.out.println("Nombre de usuario: ");
+        this.setUserName(scanner.nextLine());
+        System.out.println("Permiso de usuario: ");
+        this.setPermissionUser(true);
+        System.out.println("Salario: ");
+        this.setSalary(scanner.nextDouble());
+        System.out.println("Antiguedad: ");
+        this.setAntiquity(scanner.nextInt());
+    }
 }

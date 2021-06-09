@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Scanner;
+
 public class Staff extends User{
     ///Atributos
     private boolean permissionUser;
@@ -44,7 +46,9 @@ public class Staff extends User{
     }
 
     ///Metodos
-
+    @Override
+    public void register(){
+    }
 
 
 

@@ -128,4 +128,7 @@ public class User {
                 "\n Contraseña : " + this.password + "\n E-Mail : " + this.emailAddress;
     }
 
+    public void register(){
+    }
+
 }
