@@ -43,7 +43,6 @@ public class Main {
             listConsumption.loadConsumption();
             mapper.writeValue(fileRoom, listRoom);
             mapper.writeValue(fileConsumption, listConsumption);
-
         }
 
         else {
@@ -57,16 +56,11 @@ public class Main {
                 listConsumption= mapper.readValue(fileConsumption, CollectionConsumption.class);
         }
 
-
-
-       //System.out.print("\033[H\033[2J");
-       //System.out.flush();
-
-
         Scanner scanner = new Scanner(System.in);
 
-        Administrator administrator= new Administrator("admin", "admin", "12345", "idefinido", "argentina", "Rocket Hotel", "admin", "admin", "admin@gmail.com", true, 0, 0);
+        Administrator administratorPrincipal= new Administrator("admin", "admin", "12345", "idefinido", "argentina", "Rocket Hotel", "admin", "admin", "admin@gmail.com", true, 0, 0);
         User user= new User();
+
         char character = 0;
         String textInput;
         int option= 0;
@@ -120,6 +114,7 @@ public class Main {
                                                 }
                                                 case 2 -> {
                                                     do {
+                                                        quit= false;
                                                         System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
                                                         option = scanner.nextInt();
                                                         if (option > 0 && option < 5) {
@@ -222,10 +217,11 @@ public class Main {
                                                 7)Buscar una habitacion.
                                                 8)Comidas y bebidas.
                                                 9)Listados.                                       
-                                                10)Ver perfil.
-                                                11)Modificar perfil.
-                                                12)Menu exclusivo para administrador.
-                                                13)Registrar nuevos usuarios.
+                                                10)Generar reserva.
+                                                11)Registrar nuevos usuarios.
+                                                12)Ver perfil.
+                                                13)Modificar perfil.
+                                                14)Back up.
 
                                                 0)Salir.
                                                 """);
@@ -413,7 +409,6 @@ public class Main {
                                                 }
                                             }
                                             case 9->{
-                                                quit= false;
                                                 do {
                                                     System.out.println("Listados:\n");
                                                     System.out.println("""
@@ -450,7 +445,7 @@ public class Main {
                                                                 listReservation.showListReservationCurrent();
                                                             }
                                                             case 0 -> {
-                                                                quit= true;
+                                                                System.out.println("\n");
                                                             }
                                                             default -> System.out.println("\nOpcion incorrecta.\n");
                                                         }
@@ -458,46 +453,138 @@ public class Main {
                                                         System.out.println("\nSe debe ingresar un numero.\n");
                                                         scanner.next();
                                                     }
-                                                }while (!quit);
+                                                }while (option!=0);
 
                                             }
-                                            case 10->{
-                                                System.out.println("Perfil del administrador.\n");
-                                                System.out.println(user.toString());
-                                            }
-                                            case 11->{
-                                                System.out.println("Modificar datos: ");
-                                                listUser.userModify(user.getDni());
-                                                mapper.writeValue(fileUser, listUser);
-                                            }
-
-                                            case 12 ->{
+                                            case 10 ->{
                                                 if(user instanceof Administrator){
-                                                    System.out.println("Backup.\n");
+                                                    System.out.println("Generar reserva.\n");
+                                                    do {
+                                                        quit= false;
+                                                        System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
+                                                        option = scanner.nextInt();
+                                                        if (option > 0 && option < 5) {
+                                                            do {
+                                                                System.out.println("\nIngrese la fecha de ingreso: ");
+                                                                String entry = scanner.nextLine();
+                                                                System.out.println("\nIngrese la fecha de egreso: ");
+                                                                String exit = scanner.nextLine();
+                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom, LocalDate.parse(entry), LocalDate.parse(exit), option);
+                                                                for (Room x : roomsAvailable) {
+                                                                    System.out.println(x.toString());
+                                                                }
+                                                                do {
+                                                                    System.out.println("Ingrese la habitacion que desea reservar: ");
+                                                                    option = scanner.nextInt();
+                                                                    for (Room x : roomsAvailable) {
+                                                                        if (x.getIdRoom() == option) {
+                                                                            System.out.println("\nIngrese el dni del cliente para asignar la reserva: ");
+                                                                            String dniClient= scanner.nextLine();
+                                                                            Reservation reservationDone= new Reservation(dniClient, option, LocalDate.parse(entry), LocalDate.parse(exit), false);
+                                                                            System.out.println("\nReserva realizada");
+                                                                            listReservation.addReservation(reservationDone);
+                                                                            mapper.writeValue(fileReservation, listReservation);
+                                                                            quit = true;
+                                                                        } else {
+                                                                            System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
+                                                                        }
+                                                                    }
+                                                                } while (quit);
+                                                            }
+                                                            while (!quit);
+                                                        } else {
+                                                            System.out.println("La opcion ingresada es incorrecta. Presione 'n' para salir o cualquier otra tecla para volver a ingresar la capacidad.\n");
+                                                            character = scanner.next().charAt(0);
+                                                        }
+                                                    }
+                                                    while (!quit && character != 'n');
                                                 }
                                             }
-                                            case 13 -> {
+                                            case 11 -> {
                                                 if (user instanceof Administrator) {
                                                     System.out.println("REGISTRAR USUARIO.\n");
                                                     character = 's';
-                                                    quit = false;
 
                                                     do {
                                                         try {
                                                             System.out.println("\n1)Cliente.\n2)Recepcionista.\n3)Administrador.\n\n0)Salir.\n");
                                                             option= scanner.nextInt();
+                                                            User userAux;
+                                                            User userAux2;
+                                                            User userAux3;
+                                                            quit = false;
                                                             switch (option) {
                                                                 case 1 ->{
-                                                                    Client client= new Client();
-                                                                    client.register();
+                                                                    do {
+                                                                        Client clientNew = new Client();
+                                                                        clientNew.register();
+                                                                        userAux= listUser.searchUser(clientNew.getDni());
+                                                                        userAux2= listUser.searchUserAsUserName(clientNew.getUserName());
+                                                                        userAux3= listUser.searchUserAsMail(clientNew.getEmailAddress());
+                                                                        if(userAux!=null || userAux2!=null || userAux3!=null) {
+                                                                            if(userAux!=null){
+                                                                            System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                            if (userAux2 != null) {
+                                                                                System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                            if (userAux3 != null) {
+                                                                                System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            System.out.println("\nCliente registrado correctamente.\n");
+                                                                            quit= true;
+                                                                        }
+                                                                    }while (!quit);
                                                                 }
                                                                 case 2 ->{
-                                                                    Receptionist receptionist= new Receptionist();
-                                                                    receptionist.register();
+                                                                    do {
+                                                                        Receptionist receptionistNew = new Receptionist();
+                                                                        receptionistNew.register();
+                                                                        userAux= listUser.searchUser(receptionistNew.getDni());
+                                                                        userAux2= listUser.searchUserAsUserName(receptionistNew.getUserName());
+                                                                        userAux3= listUser.searchUserAsMail(receptionistNew.getEmailAddress());
+                                                                        if(userAux!=null || userAux2!=null || userAux3!=null) {
+                                                                            if(userAux!=null){
+                                                                                System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                            if (userAux2 != null) {
+                                                                                System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                            if (userAux3 != null) {
+                                                                                System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            System.out.println("\nRecepcionista registrado correctamente.\n");
+                                                                            quit= true;
+                                                                        }
+                                                                    }while (!quit);
                                                                 }
                                                                 case 3 ->{
-                                                                    Administrator admin= new Administrator();
-                                                                    admin.register();
+                                                                    do {
+                                                                        Administrator administratorNew = new Administrator();
+                                                                        administratorNew.register();
+                                                                        userAux= listUser.searchUser(administratorNew.getDni());
+                                                                        userAux2= listUser.searchUserAsUserName(administratorNew.getUserName());
+                                                                        userAux3= listUser.searchUserAsMail(administratorNew.getEmailAddress());
+                                                                        if(userAux!=null || userAux2!=null || userAux3!=null) {
+                                                                            if(userAux!=null){
+                                                                                System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                            if (userAux2 != null) {
+                                                                                System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                            if (userAux3 != null) {
+                                                                                System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            System.out.println("\nAdministrador registrado correctamente.\n");
+                                                                            quit= true;
+                                                                        }
+                                                                    }while (quit);
                                                                 }
                                                                 case 0 ->{
                                                                     System.out.println("\n");
@@ -513,6 +600,21 @@ public class Main {
                                                     while (option!=0);
                                                 }
                                             }
+                                            case 12->{
+                                                System.out.println("Perfil del administrador.\n");
+                                                System.out.println(user.toString());
+                                            }
+                                            case 13->{
+                                                System.out.println("Modificar datos: ");
+                                                listUser.userModify(user.getDni());
+                                                mapper.writeValue(fileUser, listUser);
+                                            }
+                                            case 14->{
+                                                System.out.println("Back up");
+
+
+
+                                            }
                                             case 0->{
                                                 quit= true;
                                             }
@@ -524,7 +626,6 @@ public class Main {
                                         scanner.next();
                                     }
                                 }
-                                quit = true;
                             } else {
                                 System.out.println("\nUsuario / E-mail o contraseña incorrectos. Presione 'n' para salir o cualquier otra tecla para continuar.\n");
                                 character = scanner.next().charAt(0);
