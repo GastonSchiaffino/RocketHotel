@@ -18,16 +18,50 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args){
+    private static Object TypeReference;
+    private static Object List;
+
+    public static void main(String[] args) throws IOException {
         ///Menu
         CollectionUser listUser = new CollectionUser();
         CollectionRoom listRoom= new CollectionRoom();
         CollectionReservation listReservation= new CollectionReservation();
         CollectionConsumption listConsumption= new CollectionConsumption();
 
-        listRoom.loadRooms();
 
-        listRoom.availableRoom();
+        File fileUser = new File("user_rockethotel.json");
+        File fileRoom = new File("room_rockethotel.json");
+        File fileReservation = new File("reservation_rockethotel.json");
+        File fileConsumption = new File("consumption_rockethotel.json");
+        ObjectMapper mapper= new ObjectMapper();
+
+        File fileAdministrativo = new File("backup_rockethotel.json");
+        ObjectMapper mapperAdministrativo= new ObjectMapper();
+
+        if(!fileUser.exists() && !fileRoom.exists() && !fileReservation.exists() && !fileConsumption.exists()) {
+            fileUser.createNewFile();
+            fileRoom.createNewFile();
+            fileReservation.createNewFile();
+            fileConsumption.createNewFile();
+            listRoom.loadRooms();
+            listConsumption.loadConsumption();
+            mapper.writeValue(fileRoom, listRoom);
+            mapper.writeValue(fileConsumption, listConsumption);
+
+        }
+
+        else {
+            if(fileUser.length()>0)
+                listUser = mapper.readValue(fileUser, CollectionUser.class);
+            if(fileRoom.length()>0)
+                listRoom= mapper.readValue(fileRoom, CollectionRoom.class);
+            if(fileReservation.length()>0)
+                listReservation = mapper.readValue(fileReservation, CollectionReservation.class);
+            if(fileConsumption.length()>0)
+                listConsumption= mapper.readValue(fileConsumption, CollectionConsumption.class);
+        }
+
+
 
        //System.out.print("\033[H\033[2J");
        //System.out.flush();
@@ -76,86 +110,105 @@ public class Main {
                                             0)Salir.
                                             """);
                                     option = scanner.nextInt();
-                                    try {
-                                        switch (option) {
-                                            case 1 -> {
-                                                System.out.println("Habitaciones:\n");
-                                                listRoom.showListRoom();
-                                            }
-                                            case 2 -> {
-                                                do {
-                                                    System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
-                                                    option= scanner.nextInt();
-                                                    if(option>0 && option<5){
-                                                        listRoom.showListRoomAsCapacity(option);
-                                                        do {
-                                                            System.out.println("\nIngrese la fecha de ingreso: ");
-                                                            String entry= scanner.nextLine();
-                                                            System.out.println("\nIngrese la fecha de egreso: ");
-                                                            String exit= scanner.nextLine();
+                                    do {
 
 
-
-                                                        //    Reservation reservation= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), true);
-                                                            quit= true;
+                                        try {
+                                            switch (option) {
+                                                case 1 -> {
+                                                    System.out.println("Habitaciones:\n");
+                                                    listRoom.showListRoom();
+                                                }
+                                                case 2 -> {
+                                                    do {
+                                                        System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
+                                                        option = scanner.nextInt();
+                                                        if (option > 0 && option < 5) {
+                                                            do {
+                                                                System.out.println("\nIngrese la fecha de ingreso: ");
+                                                                String entry = scanner.nextLine();
+                                                                System.out.println("\nIngrese la fecha de egreso: ");
+                                                                String exit = scanner.nextLine();
+                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom, LocalDate.parse(entry), LocalDate.parse(exit), option);
+                                                                for (Room x : roomsAvailable) {
+                                                                    System.out.println(x.toString());
+                                                                }
+                                                                do {
+                                                                    System.out.println("Ingrese la habitacion que desea reservar: ");
+                                                                    option = scanner.nextInt();
+                                                                    for (Room x : roomsAvailable) {
+                                                                        if (x.getIdRoom() == option) {  //puse false en el parametro porque gaspy cambio el reserved a canceled
+                                                                            System.out.println("\nReserva realizada");
+                                                                            Reservation reservationDone= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false);
+                                                                            listReservation.addReservation(reservationDone);
+                                                                            mapper.writeValue(fileReservation, CollectionReservation.class);
+                                                                            quit = true;
+                                                                        } else {
+                                                                            System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
+                                                                        }
+                                                                    }
+                                                                } while (quit);
+                                                            }
+                                                            while (!quit);
+                                                        } else {
+                                                            System.out.println("La opcion ingresada es incorrecta. Presione 'n' para salir o cualquier otra tecla para volver a ingresar la capacidad.\n");
+                                                            character = scanner.next().charAt(0);
                                                         }
-                                                        while (!quit);
                                                     }
-                                                    else{
-                                                        System.out.println("La opcion ingresada es incorrecta. Presione 'n' para salir o cualquier otra tecla para volver a ingresar la capacidad.\n");
-                                                        character= scanner.next().charAt(0);
-                                                    }
-
-                                            
+                                                    while (!quit && character != 'n');
 
                                                 }
-                                                while (!quit && character!='n');
-
-                                            }
-                                            case 3 -> {
-                                                System.out.println("Reserva actual:\n");
-
-                                            }
-                                            case 4 -> {
-                                                System.out.println("Historial de reservas:\n");
-                                                List <Reservation> reservationsClient= new ArrayList<>();
-                                                reservationsClient= listReservation.searchReservationHistory(user.getDni());
-                                                reservationsClient.forEach(System.out::println);
-                                            }
-                                            case 5 -> {
-                                                System.out.println("Reserva/s actual/es: ");
-                                                character= 's';
-                                                List <Reservation> reservationsClient= new ArrayList<>();
-                                                reservationsClient= listReservation.searchReservationCurrent(user.getDni());
-                                                reservationsClient.forEach(System.out::println);
-                                                do {
-                                                    option = scanner.nextInt();
-                                                    Reservation reservation = listReservation.searchReservation(option);
-                                                    if (reservation != null) {
-                                                        listReservation.cancelledReservartion(option);
-                                                    } else {
-                                                        System.out.println("El numero de reserva ingresado es incorrecto. Presione 's' para volver a intentarlo o cualquier otra tecla para salir.\n");
-                                                        character= scanner.next().charAt(0);
+                                                case 3 -> {
+                                                    System.out.println("Reserva actual:\n");
+                                                    List<Reservation> reservations= listReservation.searchReservationCurrent(user.getDni());
+                                                    for (Reservation x:reservations) {
+                                                        System.out.println(x.toString());
                                                     }
-                                                }while(character=='s');
+                                                }
+                                                case 4 -> {
+                                                    System.out.println("Historial de reservas:\n");
+                                                    List<Reservation> reservationsClient = new ArrayList<>();
+                                                    reservationsClient = listReservation.searchReservationHistory(user.getDni());
+                                                    reservationsClient.forEach(System.out::println);
+                                                }
+                                                case 5 -> {
+                                                    System.out.println("Reserva/s actual/es: ");
+                                                    character = 's';
+                                                    List<Reservation> reservationsClient = new ArrayList<>();
+                                                    reservationsClient = listReservation.searchReservationCurrent(user.getDni());
+                                                    reservationsClient.forEach(System.out::println);
+                                                    do {
+                                                        option = scanner.nextInt();
+                                                        Reservation reservation = listReservation.searchReservation(option);
+                                                        if (reservation != null) {
+                                                            listReservation.cancelledReservartion(option);
+                                                            System.out.println("\nReserva cancelada.");
+                                                            mapper.writeValue(fileReservation, CollectionReservation.class);
+                                                        } else {
+                                                            System.out.println("El numero de reserva ingresado es incorrecto. Presione 's' para volver a intentarlo o cualquier otra tecla para salir.\n");
+                                                            character = scanner.next().charAt(0);
+                                                        }
+                                                    } while (character == 's');
+                                                }
+                                                case 6 -> {
+                                                    System.out.println("Perfil del cliente: \n");
+                                                    System.out.println(user.toString());
+                                                }
+                                                case 7 -> {
+                                                    System.out.println("Modificar datos: ");
+                                                    listUser.userModify(user.getDni());
+                                                    mapper.writeValue(fileUser, CollectionUser.class);
+                                                }
+                                                case 0 -> {
+                                                    System.out.println("\n");
+                                                }
+                                                default -> System.out.println("\nOpcion incorrecta.\n");
                                             }
-                                            case 6 -> {
-                                                System.out.println("Perfil del cliente: \n");
-                                                System.out.println(user.toString());
-                                            }
-                                            case 7 -> {
-                                                System.out.println("Modificar datos: ");
-                                                listUser.userModify(user.getDni());
-                                            }
-                                            case 0 -> {
-                                                System.out.println("\n");
-                                            }
-                                            default -> System.out.println("\nOpcion incorrecta.\n");
+                                        } catch (InputMismatchException e) {
+                                            System.out.println("\nSe debe ingresar un numero.\n");
+                                            scanner.next();
                                         }
-                                    } catch (InputMismatchException e) {
-                                        System.out.println("\nSe debe ingresar un numero.\n");
-                                        scanner.next();
-                                    }
+                                    }while (option==0);
                                 } else if (user instanceof Staff) {
                                     System.out.println("Miembro de staff: " + user.getUserName());
                                     if(user instanceof Administrator) {
@@ -264,6 +317,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
+                                                            mapper.writeValue(fileUser, CollectionUser.class);
                                                         }
                                                         character = 'n';
                                                     }
@@ -284,6 +338,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
+                                                            mapper.writeValue(fileUser, CollectionUser.class);
                                                         }
                                                         character = 'n';
                                                     }
@@ -304,6 +359,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
+                                                            mapper.writeValue(fileUser, CollectionUser.class);
                                                         }
                                                         character = 'n';
                                                     }
@@ -320,10 +376,11 @@ public class Main {
                                                         character = scanner.next().charAt(0);
                                                     } else {
                                                         System.out.println(room.toString());
-                                                        System.out.println("\nSi desea modificar al recepcionista presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
+                                                        System.out.println("\nSi desea modificar algun item de la habitacion presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listRoom.roomModify(option);
+                                                            mapper.writeValue(fileRoom, CollectionRoom.class);
                                                         }
                                                         character = 'n';
                                                     }
@@ -348,6 +405,7 @@ public class Main {
                                                             System.out.println("Ingrese el nuevo precio del producto: ");
                                                             double price = scanner.nextInt();
                                                             listConsumption.modifyPriceConsumption(option, price);
+                                                            mapper.writeValue(fileConsumption, CollectionConsumption.class);
                                                             character= 'n';
                                                         }
                                                     }
@@ -410,6 +468,7 @@ public class Main {
                                             case 11->{
                                                 System.out.println("Modificar datos: ");
                                                 listUser.userModify(user.getDni());
+                                                mapper.writeValue(fileUser, CollectionUser.class);
                                             }
 
                                             case 12 ->{
@@ -464,6 +523,7 @@ public class Main {
                             else{
                                 quit= true;
                                 listUser.addUser(user);
+                                mapper.writeValue(fileUser, CollectionUser.class);
                             }
                         }
                         while(!quit && character!='n');

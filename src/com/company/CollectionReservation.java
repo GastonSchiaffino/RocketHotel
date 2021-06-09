@@ -27,6 +27,10 @@ public class CollectionReservation {
     }
 
     ///Metodos
+    public void addReservation(Reservation reservation){
+        listReservation.add(reservation);
+    }
+
     public Reservation searchReservation(int numberReservation) {
         Reservation reservation = null;
 
@@ -80,38 +84,36 @@ public class CollectionReservation {
         }
     }
   
-    public boolean cancelledReservartion(int numberReservation) {
+    public void cancelledReservartion(int numberReservation) {
 
         Reservation reservation = searchReservation(numberReservation);
 
         if (reservation.isReserved()) {
             reservation.setReserved(false);
         }
-        return reservation.isReserved();
     }
 
 
-    public List<Room> searchRoomsForReservation(CollectionRoom rooms, LocalDate ci, LocalDate co) {
+    public List<Room> searchRoomsForReservation(CollectionRoom rooms, LocalDate ci, LocalDate co, int capacity) {
         List<Room> suitables = new ArrayList<>();
         boolean save;
 
         for (Room r : rooms.getListRoom()) {
-            save=false;
-            for (Reservation x : listReservation) {
-                if (x.isReserved() && r.getIdRoom() == x.getIdRoom()) {
-                    if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co)) {
-                        save=true;
-                    } else if (ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut())) {
-                        save=true;
-                    } else if (co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn())) {
-                        save=true;
-                    } else if (ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
-                        save=true;
+            if (capacity == r.getCapacity()) {
+                save = false;
+                for (Reservation x : listReservation) {
+                    if (x.isReserved() && r.getIdRoom() == x.getIdRoom()) {
+                        if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co) ||
+                        ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut()) ||
+                        co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn()) ||
+                                ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
+                            save = true;
+                        }
+                    }
+                    if (!save) {
+                        suitables.add(r);
                     }
                 }
-            }
-            if(!save){
-                suitables.add(r);
             }
         }
         return suitables;
