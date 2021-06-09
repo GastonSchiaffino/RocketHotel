@@ -27,10 +27,6 @@ public class CollectionReservation {
     }
 
     ///Metodos
-    public void addReservation(Reservation reservation){
-        listReservation.add(reservation);
-    }
-
     public Reservation searchReservation(int numberReservation) {
         Reservation reservation = null;
 
@@ -42,12 +38,12 @@ public class CollectionReservation {
         return reservation;
     }
 
-    public Reservation searchReservationAsDni(String dni){
-        Reservation reservation= null;
+    public Reservation searchReservationAsDni(String dni) {
+        Reservation reservation = null;
 
-        for (Reservation x: listReservation) {
-            if (x.getDni().equals(dni)){
-                reservation= x;
+        for (Reservation x : listReservation) {
+            if (x.getDni().equals(dni)) {
+                reservation = x;
             }
         }
         return reservation;
@@ -67,7 +63,7 @@ public class CollectionReservation {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
             if (x.getDni().equals(dni)) {
-                if (x.isReserved()) {
+                if (!x.isCancelled()) {
                     reservations.add(x);
                 }
             }
@@ -76,20 +72,20 @@ public class CollectionReservation {
     }
 
 
-    public void showListReservationCurrent(){
-        for (Reservation x:listReservation) {
-            if(x.isReserved()){
+    public void showListReservationCurrent() {
+        for (Reservation x : listReservation) {
+            if (!x.isCancelled()) {
                 System.out.println(x.toString());
             }
         }
     }
-  
+
     public void cancelledReservartion(int numberReservation) {
 
         Reservation reservation = searchReservation(numberReservation);
 
-        if (reservation.isReserved()) {
-            reservation.setReserved(false);
+        if (!reservation.isCancelled()) {
+            reservation.setCancelled(true);
         }
     }
 
@@ -102,10 +98,10 @@ public class CollectionReservation {
             if (capacity == r.getCapacity()) {
                 save = false;
                 for (Reservation x : listReservation) {
-                    if (x.isReserved() && r.getIdRoom() == x.getIdRoom()) {
+                    if (!x.isCancelled() && r.getIdRoom() == x.getIdRoom()) {
                         if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co) ||
-                        ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut()) ||
-                        co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn()) ||
+                                ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut()) ||
+                                co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn()) ||
                                 ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
                             save = true;
                         }
@@ -118,5 +114,4 @@ public class CollectionReservation {
         }
         return suitables;
     }
-  
 }

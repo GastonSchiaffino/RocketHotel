@@ -11,20 +11,20 @@ public class Reservation {
     private static int reservationNumberNext= 1;
     private LocalDate checkIn;
     private LocalDate checkOut;
-    private boolean reserved;
+    private boolean cancelled;
 
     ///Constructores
     public Reservation(){
     }
 
-    public Reservation(String dni, int idRoom, LocalDate checkIn, LocalDate checkOut,boolean reserved) {
+    public Reservation(String dni, int idRoom, LocalDate checkIn, LocalDate checkOut,boolean cancelled) {
         this.dni = dni;
         this.idRoom = idRoom;
         this.reservationNumber = reservationNumberNext;
         reservationNumberNext++;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
-        this.reserved = reserved;
+        this.cancelled = cancelled;
     }
 
     ///Getters and Setters
@@ -68,12 +68,12 @@ public class Reservation {
         this.checkOut = checkOut;
     }
 
-    public boolean isReserved() {
-        return reserved;
+    public boolean isCancelled() {
+        return cancelled;
     }
 
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
 
