@@ -38,12 +38,12 @@ public class CollectionReservation {
         return reservation;
     }
 
-    public Reservation searchReservationAsDni(String dni){
-        Reservation reservation= null;
+    public Reservation searchReservationAsDni(String dni) {
+        Reservation reservation = null;
 
-        for (Reservation x: listReservation) {
-            if (x.getDni().equals(dni)){
-                reservation= x;
+        for (Reservation x : listReservation) {
+            if (x.getDni().equals(dni)) {
+                reservation = x;
             }
         }
         return reservation;
@@ -63,7 +63,7 @@ public class CollectionReservation {
         List<Reservation> reservations = new ArrayList<>();
         for (Reservation x : listReservation) {
             if (x.getDni().equals(dni)) {
-                if (x.isReserved()) {
+                if (!x.isCancelled()) {
                     reservations.add(x);
                 }
             }
@@ -72,49 +72,46 @@ public class CollectionReservation {
     }
 
 
-    public void showListReservationCurrent(){
-        for (Reservation x:listReservation) {
-            if(x.isReserved()){
+    public void showListReservationCurrent() {
+        for (Reservation x : listReservation) {
+            if (!x.isCancelled()) {
                 System.out.println(x.toString());
             }
         }
     }
-  
-    public boolean cancelledReservartion(int numberReservation) {
+
+    public void cancelledReservartion(int numberReservation) {
 
         Reservation reservation = searchReservation(numberReservation);
 
-        if (reservation.isReserved()) {
-            reservation.setReserved(false);
+        if (!reservation.isCancelled()) {
+            reservation.setCancelled(true);
         }
-        return reservation.isReserved();
     }
 
 
-    public List<Room> searchRoomsForReservation(CollectionRoom rooms, LocalDate ci, LocalDate co) {
+    public List<Room> searchRoomsForReservation(CollectionRoom rooms, LocalDate ci, LocalDate co, int capacity) {
         List<Room> suitables = new ArrayList<>();
         boolean save;
 
         for (Room r : rooms.getListRoom()) {
-            save=false;
-            for (Reservation x : listReservation) {
-                if (x.isReserved() && r.getIdRoom() == x.getIdRoom()) {
-                    if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co)) {
-                        save=true;
-                    } else if (ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut())) {
-                        save=true;
-                    } else if (co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn())) {
-                        save=true;
-                    } else if (ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
-                        save=true;
+            if (capacity == r.getCapacity()) {
+                save = false;
+                for (Reservation x : listReservation) {
+                    if (!x.isCancelled() && r.getIdRoom() == x.getIdRoom()) {
+                        if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co) ||
+                                ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut()) ||
+                                co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn()) ||
+                                ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
+                            save = true;
+                        }
+                    }
+                    if (!save) {
+                        suitables.add(r);
                     }
                 }
-            }
-            if(!save){
-                suitables.add(r);
             }
         }
         return suitables;
     }
-  
 }
