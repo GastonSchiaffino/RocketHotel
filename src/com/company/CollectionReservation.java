@@ -27,6 +27,10 @@ public class CollectionReservation {
     }
 
     ///Metodos
+    public void addReservation(Reservation reservation){
+        listReservation.add(reservation);
+    }
+
     public Reservation searchReservation(int numberReservation) {
         Reservation reservation = null;
 
