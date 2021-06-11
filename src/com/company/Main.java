@@ -35,45 +35,40 @@ public class Main {
             fileAdmin.createNewFile();
             Administrator administratorPrincipal = new Administrator("admin", "admin", "12345", "indefinido", "argentina", "Rocket Hotel", "admin", "admin", "admin@gmail.com", true, 0, 0);
             listUser.addUser(administratorPrincipal);
-            listUser.write(fileAdmin, fileReceptionist, fileClient);
+            listUser.writeAdmin(fileAdmin);
+        } else {
+            listUser.readAdmin(fileAdmin);
         }
-        else
-            listUser.read(fileAdmin,fileReceptionist,fileClient);
 
         if(!fileReceptionist.exists()) {
             fileReceptionist.createNewFile();
-            listUser.write(fileAdmin,fileReceptionist,fileClient);
-        }
-        else
-            listUser.read(fileAdmin,fileReceptionist,fileClient);
+            listUser.writeRecep(fileReceptionist);
+        } else
+            listUser.readRecep(fileReceptionist);
 
         if(!fileClient.exists()) {
             fileClient.createNewFile();
-            listUser.write(fileAdmin,fileReceptionist,fileClient);
-        }
-        else
-            listUser.read(fileAdmin,fileReceptionist,fileClient);
+            listUser.writeClient(fileClient);
+        } else
+            listUser.readClient(fileClient);
 
         if(!fileRoom.exists()) {
             fileRoom.createNewFile();
             listRoom.loadRooms();
             listRoom.write(fileRoom);
-        }
-        else
+        } else
             listRoom.read(fileRoom);
 
         if(!fileReservation.exists()) {
             fileReservation.createNewFile();
-        }
-        else
+        } else
             listReservation.read(fileReservation);
 
         if(!fileConsumption.exists()) {
             fileConsumption.createNewFile();
             listConsumption.loadConsumption();
             listConsumption.write(fileConsumption);
-        }
-        else
+        } else
             listConsumption.read(fileConsumption);
 
         Scanner scanner = new Scanner(System.in);

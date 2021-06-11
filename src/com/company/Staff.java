@@ -3,7 +3,7 @@ package com.company;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class Staff extends User{
+public class Staff extends User {
     ///Atributos
     private boolean permissionUser;
     private double salary;

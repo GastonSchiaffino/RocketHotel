@@ -1,9 +1,11 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 638L;
     ///Atributos
     private String name;
     private String surname;
