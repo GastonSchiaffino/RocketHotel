@@ -1,5 +1,7 @@
 package com.company;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -81,6 +83,7 @@ public class Main {
         char character = 0;
         String textInput;
         int option= 0;
+        char optionChar;
         boolean quit = false;
         boolean quitProgram= false;
 
@@ -91,38 +94,36 @@ public class Main {
                 System.out.println("ROCKET HOTEL: \n");
                 System.out.println("1)Login.\n0)Salir.\n\nOpcion: ");
                 option = scanner.nextInt();
-                scanner.nextLine();
 
                 switch (option) {
                     case 1 -> {
-                        System.out.println("LOGIN.");
                         do {
                             quit= false;
+                            System.out.println("LOGIN.");
 
                             System.out.println("\nNombre de usuario o E-mail: ");
-                            String userName = scanner.nextLine();
+                            String userName = scanner.next();
                             System.out.println("\nPassword: ");
-                            String password = scanner.nextLine();
+                            String password = scanner.next();
                             user = listUser.loginUser(userName, password);
                             if (user != null) {
-                                if (user instanceof Client) {
-                                    System.out.println("Usuario " + user.getUserName());
-                                    System.out.println("""
-
-                                            1)Ver habitaciones.
-                                            2)Realizar reserva.
-                                            3)Reserva actual.
-                                            4)Listados de reservas.
-                                            5)Cancelar reserva.
-                                            6)Ver perfil.
-                                            7)Modificar perfil.
-
-                                            0)Salir.
-                                            """);
-                                    option = scanner.nextInt();
+                                if(listUser.searchClient(user.getDni())!=null) {
                                     do {
+                                        System.out.println("Usuario " + user.getUserName());
+                                        System.out.println("""
 
+                                                1)Ver habitaciones.
+                                                2)Realizar reserva.
+                                                3)Reserva actual.
+                                                4)Listados de reservas.
+                                                5)Cancelar reserva.
+                                                6)Ver perfil.
+                                                7)Modificar perfil.
 
+                                                0)Salir.
+                                                """);
+
+                                        option = scanner.nextInt();
                                         try {
                                             switch (option) {
                                                 case 1 -> {
@@ -131,15 +132,15 @@ public class Main {
                                                 }
                                                 case 2 -> {
                                                     do {
-                                                        quit= false;
+                                                        quit = false;
                                                         System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
                                                         option = scanner.nextInt();
                                                         if (option > 0 && option < 5) {
                                                             do {
-                                                                System.out.println("\nIngrese la fecha de ingreso: ");
-                                                                String entry = scanner.nextLine();
-                                                                System.out.println("\nIngrese la fecha de egreso: ");
-                                                                String exit = scanner.nextLine();
+                                                                System.out.println("\nIngrese la fecha de ingreso(xx/xx/xxxx): ");
+                                                                String entry = scanner.next();
+                                                                System.out.println("\nIngrese la fecha de egreso(xx/xx/xxxx): ");
+                                                                String exit = scanner.next();
                                                                 List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
                                                                 for (Room x : roomsAvailable) {
                                                                     System.out.println(x.toString());
@@ -150,7 +151,7 @@ public class Main {
                                                                     for (Room x : roomsAvailable) {
                                                                         if (x.getIdRoom() == option) {
                                                                             System.out.println("\nReserva realizada");
-                                                                            Reservation reservationDone= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false);
+                                                                            Reservation reservationDone = new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false);
                                                                             listReservation.addReservation(reservationDone);
                                                                             listReservation.write(fileReservation);
                                                                             quit = true;
@@ -171,8 +172,8 @@ public class Main {
                                                 }
                                                 case 3 -> {
                                                     System.out.println("Reserva actual:\n");
-                                                    List<Reservation> reservations= listReservation.searchReservationCurrent(user.getDni());
-                                                    for (Reservation x:reservations) {
+                                                    List<Reservation> reservations = listReservation.searchReservationCurrent(user.getDni());
+                                                    for (Reservation x : reservations) {
                                                         System.out.println(x.toString());
                                                     }
                                                 }
@@ -189,15 +190,20 @@ public class Main {
                                                     reservationsClient = listReservation.searchReservationCurrent(user.getDni());
                                                     reservationsClient.forEach(System.out::println);
                                                     do {
-                                                        option = scanner.nextInt();
-                                                        Reservation reservation = listReservation.searchReservation(option);
-                                                        if (reservation != null) {
-                                                            listReservation.cancelledReservartion(option);
-                                                            System.out.println("\nReserva cancelada.");
-                                                            listReservation.write(fileReservation);
-                                                        } else {
-                                                            System.out.println("El numero de reserva ingresado es incorrecto. Presione 's' para volver a intentarlo o cualquier otra tecla para salir.\n");
-                                                            character = scanner.next().charAt(0);
+                                                        if (!reservationsClient.isEmpty()) {
+                                                            option = scanner.nextInt();
+                                                            Reservation reservation = listReservation.searchReservation(option);
+                                                            if (reservation != null) {
+                                                                listReservation.cancelledReservartion(option);
+                                                                System.out.println("\nReserva cancelada.");
+                                                                listReservation.write(fileReservation);
+                                                            } else {
+                                                                System.out.println("El numero de reserva ingresado es incorrecto. Presione 's' para volver a intentarlo o cualquier otra tecla para salir.\n");
+                                                                character = scanner.next().charAt(0);
+                                                            }
+                                                        }else {
+                                                            System.out.println("No posee reservas vigentes.\n");
+                                                            character='n';
                                                         }
                                                     } while (character == 's');
                                                 }
@@ -212,6 +218,7 @@ public class Main {
                                                 }
                                                 case 0 -> {
                                                     System.out.println("\n");
+                                                    quit= true;
                                                 }
                                                 default -> System.out.println("\nOpcion incorrecta.\n");
                                             }
@@ -219,10 +226,10 @@ public class Main {
                                             System.out.println("\nSe debe ingresar un numero.\n");
                                             scanner.next();
                                         }
-                                    }while (option==0);
-                                } else if (user instanceof Staff) {
+                                    }while (option!=0 && !quit);
+                                } else if (listUser.searchAdministrator(user.getDni())!=null || listUser.searchReceptionist(user.getDni())!=null) {
                                     System.out.println("Miembro de staff: " + user.getUserName());
-                                    if(user instanceof Administrator) {
+                                    if(listUser.searchAdministrator(user.getDni())!=null) {
                                         System.out.println("""
 
                                                 1)Ver habitaciones.
@@ -261,205 +268,50 @@ public class Main {
                                                 0)Salir.
                                                 """);
                                     }
-                                    option = scanner.nextInt();
                                     try{
-                                        switch (option){
-                                            case 1->{
-                                                System.out.println("Habitaciones:\n");
-                                                listRoom.showListRoom();
-                                            }
-                                            case 2->{
-                                                System.out.println("Reservas vigentes:\n");
-                                                listReservation.showListReservationCurrent();
-                                            }
-                                            case 3->{
-                                                System.out.println("Buscar reserva:\n1)Por DNI.\n2)Por numero de reserva.\n0)Salir.\n");
-                                                option= scanner.nextInt();
-                                                try {
-                                                    switch (option) {
-                                                        case 1 -> {
-                                                            do {
-                                                                System.out.println("Ingrese el numero de DNI: ");
-                                                                textInput = scanner.nextLine();
-                                                                Reservation reservation = listReservation.searchReservationAsDni(textInput);
-                                                                if (reservation == null) {
-                                                                    System.out.println("No existe ninguna reserva asignada al DNI ingresado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
-                                                                    character = scanner.next().charAt(0);
-                                                                } else {
-                                                                    System.out.println(reservation.toString());
-                                                                    character = 'n';
-                                                                }
-                                                            } while (character == 's');
-                                                        }
-                                                        case 2 -> {
-                                                            do {
-                                                                System.out.println("Ingrese el numero de reserva: ");
-                                                                option = scanner.nextInt();
-                                                                Reservation reservation = listReservation.searchReservation(option);
-                                                                if (reservation == null) {
-                                                                    System.out.println("No existe ninguna reserva con bajo ese numero de identificacion. Presione 's' para ingresar otro numero de reserva o cualquier otra tecla para salir.\n");
-                                                                    character = scanner.next().charAt(0);
-                                                                } else {
-                                                                    System.out.println(reservation.toString());
-                                                                    character = 'n';
-                                                                }
-                                                            } while (character == 's');
-                                                        }
-                                                        case 0 -> {
-                                                            System.out.println("\n");
-                                                        }
-                                                        default -> System.out.println("\nOpcion incorrecta.\n");
-                                                    }
-                                                }catch (InputMismatchException e) {
-                                                    System.out.println("\nSe debe ingresar un numero.\n");
-                                                    scanner.next();
+                                        do {
+                                            option = scanner.nextInt();
+                                            switch (option) {
+                                                case 1 -> {
+                                                    System.out.println("Habitaciones:\n");
+                                                    listRoom.showListRoom();
                                                 }
-                                            }
-                                            case 4->{
-                                                System.out.println("Busqueda de clientes.\n");
-                                                do {
-                                                    System.out.println("Ingrese el DNI del cliente que desea buscar: ");
-                                                    textInput = scanner.nextLine();
-                                                    Client client= listUser.searchClient(textInput);
-                                                    if (client == null) {
-                                                        System.out.println("No existe ningun cliente con el DNI indicado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
-                                                        character = scanner.next().charAt(0);
-                                                    } else {
-                                                        System.out.println(client.toString());
-                                                        System.out.println("\nSi desea modificar al cliente presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
-                                                        character= scanner.next().charAt(0);
-                                                        if(character=='m'){
-                                                            listUser.userModify(textInput);
-                                                            listUser.write(fileAdmin, fileReceptionist, fileClient);
-                                                        }
-                                                        character = 'n';
-                                                    }
-                                                } while (character == 's');
-                                            }
-                                            case 5->{
-                                                System.out.println("Busqueda de administrador.\n");
-                                                do {
-                                                    System.out.println("Ingrese el DNI del administrador que desea buscar: ");
-                                                    textInput = scanner.nextLine();
-                                                    Administrator administrator= listUser.searchAdministrator(textInput);
-                                                    if (administrator == null) {
-                                                        System.out.println("No existe ningun administrador con el DNI indicado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
-                                                        character = scanner.next().charAt(0);
-                                                    } else {
-                                                        System.out.println(administrator.toString());
-                                                        System.out.println("\nSi desea modificar al administrador presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
-                                                        character= scanner.next().charAt(0);
-                                                        if(character=='m'){
-                                                            listUser.userModify(textInput);
-                                                            listUser.write(fileAdmin, fileReceptionist, fileClient);
-                                                        }
-                                                        character = 'n';
-                                                    }
-                                                } while (character == 's');
-                                            }
-                                            case 6->{
-                                                System.out.println("Busqueda de recepcionista.\n");
-                                                do {
-                                                    System.out.println("Ingrese el DNI del recepcionista que desea buscar: ");
-                                                    textInput = scanner.nextLine();
-                                                    Receptionist receptionist= listUser.searchReceptionist(textInput);
-                                                    if (receptionist == null) {
-                                                        System.out.println("No existe ningun recepcionista con el DNI indicado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
-                                                        character = scanner.next().charAt(0);
-                                                    } else {
-                                                        System.out.println(receptionist.toString());
-                                                        System.out.println("\nSi desea modificar al recepcionista presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
-                                                        character= scanner.next().charAt(0);
-                                                        if(character=='m'){
-                                                            listUser.userModify(textInput);
-                                                            listUser.write(fileAdmin, fileReceptionist, fileClient);
-                                                        }
-                                                        character = 'n';
-                                                    }
-                                                } while (character == 's');
-                                            }
-                                            case 7->{
-                                                System.out.println("Busqueda de habitacion.\n");
-                                                do {
-                                                    System.out.println("Ingrese el numero de identificacion de la habitacion que desea buscar: ");
-                                                    option = scanner.nextInt();
-                                                    Room room= listRoom.searchRoom(option);
-                                                    if (room == null) {
-                                                        System.out.println("No existe ninguna habitacion con ese numero de identificacion. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
-                                                        character = scanner.next().charAt(0);
-                                                    } else {
-                                                        System.out.println(room.toString());
-                                                        System.out.println("\nSi desea modificar algun item de la habitacion presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
-                                                        character= scanner.next().charAt(0);
-                                                        if(character=='m'){
-                                                            listRoom.roomModify(option);
-                                                            listRoom.write(fileRoom);
-                                                        }
-                                                        character = 'n';
-                                                    }
-                                                } while (character == 's');
-                                            }
-                                            case 8->{
-                                                System.out.println("Comidas y bebidas.\n");
-                                                listConsumption.showListConsumition();
-                                                System.out.println("\nSi desea modificar alguna bebida o comida presione 'm', de lo contrario cualquier otra tecla para salir.\n");
-                                                character= scanner.next().charAt(0);
-                                                if (character=='m') {
-                                                    do {
-                                                        System.out.println("Ingrese el identificador que quiera modificar: ");
-                                                        option= scanner.nextInt();
-                                                        Consumption consumption= listConsumption.searchConsumption(option);
-                                                        if(consumption==null) {
-                                                            System.out.println("No existe ninguna bebida o comida con ese numero de identificacion. Presione 's' para ingresar otro identificador o cualquier otra tecla para salir.\n");
-                                                            character = scanner.next().charAt(0);
-                                                        }
-                                                        else {
-                                                            System.out.println(consumption.toString());
-                                                            System.out.println("Ingrese el nuevo precio del producto: ");
-                                                            double price = scanner.nextInt();
-                                                            listConsumption.modifyPriceConsumption(option, price);
-                                                            listConsumption.write(fileConsumption);
-                                                            character= 'n';
-                                                        }
-                                                    }
-                                                    while (character=='s');
+                                                case 2 -> {
+                                                    System.out.println("Reservas vigentes:\n");
+                                                    listReservation.showListReservationCurrent();
                                                 }
-                                            }
-                                            case 9->{
-                                                do {
-                                                    System.out.println("Listados:\n");
-                                                    System.out.println("""
-
-                                                            1)Listado de administradores.
-                                                            2)Listado de recepcionistas.
-                                                            3)Listado de clientes.
-                                                            4)Listado de habitaciones.
-                                                            5)Listado de reservas.
-
-                                                            0)Salir.
-                                                            """);
+                                                case 3 -> {
+                                                    System.out.println("Buscar reserva:\n1)Por DNI.\n2)Por numero de reserva.\n0)Salir.\n");
                                                     option = scanner.nextInt();
                                                     try {
                                                         switch (option) {
                                                             case 1 -> {
-                                                                System.out.println("Listado de administradores:\n");
-                                                                listUser.showListAdministrator();
+                                                                do {
+                                                                    System.out.println("Ingrese el numero de DNI: ");
+                                                                    textInput = scanner.next();
+                                                                    Reservation reservation = listReservation.searchReservationAsDni(textInput);
+                                                                    if (reservation == null) {
+                                                                        System.out.println("No existe ninguna reserva asignada al DNI ingresado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
+                                                                        character = scanner.next().charAt(0);
+                                                                    } else {
+                                                                        System.out.println(reservation.toString());
+                                                                        character = 'n';
+                                                                    }
+                                                                } while (character == 's');
                                                             }
                                                             case 2 -> {
-                                                                System.out.println("Listado de recepcionistas:\n");
-                                                                listUser.showListRecepcionist();
-                                                            }
-                                                            case 3 -> {
-                                                                System.out.println("Listado de clientes:\n");
-                                                                listUser.showListClient();
-                                                            }
-                                                            case 4 -> {
-                                                                System.out.println("Listado de habitaciones:\n");
-                                                                listRoom.showListRoom();
-                                                            }
-                                                            case 5 -> {
-                                                                System.out.println("Listado de reservas:\n");
-                                                                listReservation.showListReservationCurrent();
+                                                                do {
+                                                                    System.out.println("Ingrese el numero de reserva: ");
+                                                                    option = scanner.nextInt();
+                                                                    Reservation reservation = listReservation.searchReservation(option);
+                                                                    if (reservation == null) {
+                                                                        System.out.println("No existe ninguna reserva con bajo ese numero de identificacion. Presione 's' para ingresar otro numero de reserva o cualquier otra tecla para salir.\n");
+                                                                        character = scanner.next().charAt(0);
+                                                                    } else {
+                                                                        System.out.println(reservation.toString());
+                                                                        character = 'n';
+                                                                    }
+                                                                } while (character == 's');
                                                             }
                                                             case 0 -> {
                                                                 System.out.println("\n");
@@ -470,173 +322,343 @@ public class Main {
                                                         System.out.println("\nSe debe ingresar un numero.\n");
                                                         scanner.next();
                                                     }
-                                                }while (option!=0);
-
-                                            }
-                                            case 10 ->{
-                                                if(user instanceof Administrator){
-                                                    System.out.println("Generar reserva.\n");
-                                                    do {
-                                                        quit= false;
-                                                        System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
-                                                        option = scanner.nextInt();
-                                                        if (option > 0 && option < 5) {
-                                                            do {
-                                                                System.out.println("\nIngrese la fecha de ingreso: ");
-                                                                String entry = scanner.nextLine();
-                                                                System.out.println("\nIngrese la fecha de egreso: ");
-                                                                String exit = scanner.nextLine();
-                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
-                                                                for (Room x : roomsAvailable) {
-                                                                    System.out.println(x.toString());
-                                                                }
-                                                                do {
-                                                                    System.out.println("Ingrese la habitacion que desea reservar: ");
-                                                                    option = scanner.nextInt();
-                                                                    for (Room x : roomsAvailable) {
-                                                                        if (x.getIdRoom() == option) {
-                                                                            System.out.println("\nIngrese el dni del cliente para asignar la reserva: ");
-                                                                            String dniClient= scanner.nextLine();
-                                                                            Reservation reservationDone= new Reservation(dniClient, option, LocalDate.parse(entry), LocalDate.parse(exit), false);
-                                                                            System.out.println("\nReserva realizada");
-                                                                            listReservation.addReservation(reservationDone);
-                                                                            listReservation.write(fileReservation);
-                                                                            quit = true;
-                                                                        } else {
-                                                                            System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
-                                                                        }
-                                                                    }
-                                                                } while (quit);
-                                                            }
-                                                            while (!quit);
-                                                        } else {
-                                                            System.out.println("La opcion ingresada es incorrecta. Presione 'n' para salir o cualquier otra tecla para volver a ingresar la capacidad.\n");
-                                                            character = scanner.next().charAt(0);
-                                                        }
-                                                    }
-                                                    while (!quit && character != 'n');
                                                 }
-                                            }
-                                            case 11 -> {
-                                                if (user instanceof Administrator) {
-                                                    System.out.println("REGISTRAR USUARIO.\n");
-                                                    character = 's';
-
+                                                case 4 -> {
                                                     do {
+                                                        System.out.println("Busqueda de clientes.\n");
+                                                        System.out.println("Ingrese el DNI del cliente que desea buscar: ");
+                                                        textInput = scanner.next();
+                                                        Client client = listUser.searchClient(textInput);
+                                                        if (client == null) {
+                                                            System.out.println("No existe ningun cliente con el DNI indicado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
+                                                            character = scanner.next().charAt(0);
+                                                        } else {
+                                                            System.out.println(client.toString());
+                                                            System.out.println("\nSi desea modificar al cliente presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
+                                                            character = scanner.next().charAt(0);
+                                                            if (character == 'm') {
+                                                                listUser.userModify(textInput);
+                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                            }
+                                                            character = 'n';
+                                                        }
+                                                    } while (character == 's');
+                                                }
+                                                case 5 -> {
+                                                    do {
+                                                        System.out.println("Busqueda de administrador.\n");
+                                                        System.out.println("Ingrese el DNI del administrador que desea buscar: ");
+                                                        textInput = scanner.next();
+                                                        Administrator administrator = listUser.searchAdministrator(textInput);
+                                                        if (administrator == null) {
+                                                            System.out.println("No existe ningun administrador con el DNI indicado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
+                                                            character = scanner.next().charAt(0);
+                                                        } else {
+                                                            System.out.println(administrator.toString());
+                                                            System.out.println("\nSi desea modificar al administrador presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
+                                                            character = scanner.next().charAt(0);
+                                                            if (character == 'm') {
+                                                                listUser.userModify(textInput);
+                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                            }
+                                                            character = 'n';
+                                                        }
+                                                    } while (character == 's');
+                                                }
+                                                case 6 -> {
+                                                    do {
+                                                        System.out.println("Busqueda de recepcionista.\n");
+                                                        System.out.println("Ingrese el DNI del recepcionista que desea buscar: ");
+                                                        textInput = scanner.next();
+                                                        Receptionist receptionist = listUser.searchReceptionist(textInput);
+                                                        if (receptionist == null) {
+                                                            System.out.println("No existe ningun recepcionista con el DNI indicado. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
+                                                            character = scanner.next().charAt(0);
+                                                        } else {
+                                                            System.out.println(receptionist.toString());
+                                                            System.out.println("\nSi desea modificar al recepcionista presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
+                                                            character = scanner.next().charAt(0);
+                                                            if (character == 'm') {
+                                                                listUser.userModify(textInput);
+                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                            }
+                                                            character = 'n';
+                                                        }
+                                                    } while (character == 's');
+                                                }
+                                                case 7 -> {
+                                                    do {
+                                                        System.out.println("Busqueda de habitacion.\n");
+                                                        System.out.println("Ingrese el numero de identificacion de la habitacion que desea buscar: ");
+                                                        option = scanner.nextInt();
+                                                        Room room = listRoom.searchRoom(option);
+                                                        if (room == null) {
+                                                            System.out.println("No existe ninguna habitacion con ese numero de identificacion. Presione 's' para ingresar otro DNI o cualquier otra tecla para salir.\n");
+                                                            character = scanner.next().charAt(0);
+                                                        } else {
+                                                            System.out.println(room.toString());
+                                                            System.out.println("\nSi desea modificar algun item de la habitacion presione 'm', de lo contrario cualquier otra tecla para continuar.\n");
+                                                            character = scanner.next().charAt(0);
+                                                            if (character == 'm') {
+                                                                listRoom.roomModify(option);
+                                                                listRoom.write(fileRoom);
+                                                            }
+                                                            character = 'n';
+                                                        }
+                                                    } while (character == 's');
+                                                }
+                                                case 8 -> {
+                                                    System.out.println("Comidas y bebidas.\n");
+                                                    listConsumption.showListConsumition();
+                                                    System.out.println("\nSi desea modificar alguna bebida o comida presione 'm', de lo contrario cualquier otra tecla para salir.\n");
+                                                    character = scanner.next().charAt(0);
+                                                    if (character == 'm') {
+                                                        do {
+                                                            System.out.println("Ingrese el identificador que quiera modificar: ");
+                                                            option = scanner.nextInt();
+                                                            Consumption consumption = listConsumption.searchConsumption(option);
+                                                            if (consumption == null) {
+                                                                System.out.println("No existe ninguna bebida o comida con ese numero de identificacion. Presione 's' para ingresar otro identificador o cualquier otra tecla para salir.\n");
+                                                                character = scanner.next().charAt(0);
+                                                            } else {
+                                                                System.out.println(consumption.toString());
+                                                                System.out.println("Ingrese el nuevo precio del producto: ");
+                                                                double price = scanner.nextInt();
+                                                                listConsumption.modifyPriceConsumption(option, price);
+                                                                listConsumption.write(fileConsumption);
+                                                                character = 'n';
+                                                            }
+                                                        }
+                                                        while (character == 's');
+                                                    }
+                                                }
+                                                case 9 -> {
+                                                    do {
+                                                        System.out.println("Listados:\n");
+                                                        System.out.println("""
+
+                                                                1)Listado de administradores.
+                                                                2)Listado de recepcionistas.
+                                                                3)Listado de clientes.
+                                                                4)Listado de habitaciones.
+                                                                5)Listado de reservas.
+
+                                                                0)Salir.
+                                                                """);
+                                                        option = scanner.nextInt();
                                                         try {
-                                                            System.out.println("\n1)Cliente.\n2)Recepcionista.\n3)Administrador.\n\n0)Salir.\n");
-                                                            option= scanner.nextInt();
-                                                            User userAux;
-                                                            User userAux2;
-                                                            User userAux3;
-                                                            quit = false;
                                                             switch (option) {
-                                                                case 1 ->{
-                                                                    do {
-                                                                        Client clientNew = new Client();
-                                                                        clientNew.register();
-                                                                        userAux= listUser.searchUser(clientNew.getDni());
-                                                                        userAux2= listUser.searchUserAsUserName(clientNew.getUserName());
-                                                                        userAux3= listUser.searchUserAsMail(clientNew.getEmailAddress());
-                                                                        if(userAux!=null || userAux2!=null || userAux3!=null) {
-                                                                            if(userAux!=null){
-                                                                            System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                            if (userAux2 != null) {
-                                                                                System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                            if (userAux3 != null) {
-                                                                                System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                        }
-                                                                        else {
-                                                                            System.out.println("\nCliente registrado correctamente.\n");
-                                                                            quit= true;
-                                                                        }
-                                                                    }while (!quit);
+                                                                case 1 -> {
+                                                                    System.out.println("Listado de administradores:\n");
+                                                                    listUser.showListAdministrator();
                                                                 }
-                                                                case 2 ->{
-                                                                    do {
-                                                                        Receptionist receptionistNew = new Receptionist();
-                                                                        receptionistNew.register();
-                                                                        userAux= listUser.searchUser(receptionistNew.getDni());
-                                                                        userAux2= listUser.searchUserAsUserName(receptionistNew.getUserName());
-                                                                        userAux3= listUser.searchUserAsMail(receptionistNew.getEmailAddress());
-                                                                        if(userAux!=null || userAux2!=null || userAux3!=null) {
-                                                                            if(userAux!=null){
-                                                                                System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                            if (userAux2 != null) {
-                                                                                System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                            if (userAux3 != null) {
-                                                                                System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                        }
-                                                                        else {
-                                                                            System.out.println("\nRecepcionista registrado correctamente.\n");
-                                                                            quit= true;
-                                                                        }
-                                                                    }while (!quit);
+                                                                case 2 -> {
+                                                                    System.out.println("Listado de recepcionistas:\n");
+                                                                    listUser.showListRecepcionist();
                                                                 }
-                                                                case 3 ->{
-                                                                    do {
-                                                                        Administrator administratorNew = new Administrator();
-                                                                        administratorNew.register();
-                                                                        userAux= listUser.searchUser(administratorNew.getDni());
-                                                                        userAux2= listUser.searchUserAsUserName(administratorNew.getUserName());
-                                                                        userAux3= listUser.searchUserAsMail(administratorNew.getEmailAddress());
-                                                                        if(userAux!=null || userAux2!=null || userAux3!=null) {
-                                                                            if(userAux!=null){
-                                                                                System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                            if (userAux2 != null) {
-                                                                                System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                            if (userAux3 != null) {
-                                                                                System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
-                                                                            }
-                                                                        }
-                                                                        else {
-                                                                            System.out.println("\nAdministrador registrado correctamente.\n");
-                                                                            quit= true;
-                                                                        }
-                                                                    }while (quit);
+                                                                case 3 -> {
+                                                                    System.out.println("Listado de clientes:\n");
+                                                                    listUser.showListClient();
                                                                 }
-                                                                case 0 ->{
+                                                                case 4 -> {
+                                                                    System.out.println("Listado de habitaciones:\n");
+                                                                    listRoom.showListRoom();
+                                                                }
+                                                                case 5 -> {
+                                                                    System.out.println("Listado de reservas:\n");
+                                                                    listReservation.showListReservationCurrent();
+                                                                }
+                                                                case 0 -> {
                                                                     System.out.println("\n");
                                                                 }
                                                                 default -> System.out.println("\nOpcion incorrecta.\n");
                                                             }
-
                                                         } catch (InputMismatchException e) {
                                                             System.out.println("\nSe debe ingresar un numero.\n");
                                                             scanner.next();
                                                         }
-                                                    }
-                                                    while (option!=0);
+                                                    } while (option != 0);
+
                                                 }
-                                            }
-                                            case 12->{
-                                                System.out.println("Perfil del administrador.\n");
-                                                System.out.println(user.toString());
-                                            }
-                                            case 13->{
-                                                System.out.println("Modificar datos: ");
-                                                listUser.userModify(user.getDni());
-                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
-                                            }
-                                            case 14->{
-                                                System.out.println("Back up");
+                                                case 10 -> {
+                                                    if (user instanceof Administrator) {
+                                                        do {
+                                                            System.out.println("Generar reserva.\n");
+                                                            quit = false;
+                                                            System.out.println("Ingrese el numero de personas(capacidad minima 1 / capacidad maxima 4): ");
+                                                            option = scanner.nextInt();
+                                                            if (option > 0 && option < 5) {
+                                                                do {
+                                                                    System.out.println("\nIngrese la fecha de ingreso: ");
+                                                                    String entry = scanner.next();
+                                                                    System.out.println("\nIngrese la fecha de egreso: ");
+                                                                    String exit = scanner.next();
+                                                                    List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
+                                                                    for (Room x : roomsAvailable) {
+                                                                        System.out.println(x.toString());
+                                                                    }
+                                                                    do {
+                                                                        System.out.println("Ingrese la habitacion que desea reservar: ");
+                                                                        option = scanner.nextInt();
+                                                                        for (Room x : roomsAvailable) {
+                                                                            if (x.getIdRoom() == option) {
+                                                                                System.out.println("\nIngrese el dni del cliente para asignar la reserva: ");
+                                                                                String dniClient = scanner.next();
+                                                                                Reservation reservationDone = new Reservation(dniClient, option, LocalDate.parse(entry), LocalDate.parse(exit), false);
+                                                                                System.out.println("\nReserva realizada");
+                                                                                listReservation.addReservation(reservationDone);
+                                                                                listReservation.write(fileReservation);
+                                                                                quit = true;
+                                                                            } else {
+                                                                                System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
+                                                                            }
+                                                                        }
+                                                                    } while (quit);
+                                                                }
+                                                                while (!quit);
+                                                            } else {
+                                                                System.out.println("La opcion ingresada es incorrecta. Presione 'n' para salir o cualquier otra tecla para volver a ingresar la capacidad.\n");
+                                                                character = scanner.next().charAt(0);
+                                                            }
+                                                        }
+                                                        while (!quit && character != 'n');
+                                                    }
+                                                }
+                                                case 11 -> {
+                                                    if (user instanceof Administrator) {
+                                                        character = 's';
+
+                                                        do {
+                                                            System.out.println("REGISTRAR USUARIO.\n");
+                                                            try {
+                                                                System.out.println("\n1)Cliente.\n2)Recepcionista.\n3)Administrador.\n\n0)Salir.\n");
+                                                                option = scanner.nextInt();
+                                                                User userAux;
+                                                                User userAux2;
+                                                                User userAux3;
+                                                                quit = false;
+                                                                switch (option) {
+                                                                    case 1 -> {
+                                                                        do {
+                                                                            Client clientNew = new Client();
+                                                                            clientNew.register();
+                                                                            userAux = listUser.searchUser(clientNew.getDni());
+                                                                            userAux2 = listUser.searchUserAsUserName(clientNew.getUserName());
+                                                                            userAux3 = listUser.searchUserAsMail(clientNew.getEmailAddress());
+                                                                            if (userAux != null || userAux2 != null || userAux3 != null) {
+                                                                                if (userAux != null) {
+                                                                                    System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                                if (userAux2 != null) {
+                                                                                    System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                                if (userAux3 != null) {
+                                                                                    System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                            } else {
+                                                                                System.out.println("\nCliente registrado correctamente.\n");
+                                                                                listUser.addUser(clientNew);
+                                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+
+                                                                                quit = true;
+                                                                            }
+                                                                        } while (!quit);
+                                                                    }
+                                                                    case 2 -> {
+                                                                        do {
+                                                                            Receptionist receptionistNew = new Receptionist();
+                                                                            receptionistNew.register();
+                                                                            userAux = listUser.searchUser(receptionistNew.getDni());
+                                                                            userAux2 = listUser.searchUserAsUserName(receptionistNew.getUserName());
+                                                                            userAux3 = listUser.searchUserAsMail(receptionistNew.getEmailAddress());
+                                                                            if (userAux != null || userAux2 != null || userAux3 != null) {
+                                                                                if (userAux != null) {
+                                                                                    System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                                if (userAux2 != null) {
+                                                                                    System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                                if (userAux3 != null) {
+                                                                                    System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                            } else {
+                                                                                System.out.println("\nRecepcionista registrado correctamente.\n");
+                                                                                listUser.addUser(receptionistNew);
+                                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+
+                                                                                quit = true;
+                                                                            }
+                                                                        } while (!quit);
+                                                                    }
+                                                                    case 3 -> {
+                                                                        do {
+                                                                            Administrator administratorNew = new Administrator();
+                                                                            administratorNew.register();
+                                                                            userAux = listUser.searchUser(administratorNew.getDni());
+                                                                            userAux2 = listUser.searchUserAsUserName(administratorNew.getUserName());
+                                                                            userAux3 = listUser.searchUserAsMail(administratorNew.getEmailAddress());
+                                                                            if (userAux != null || userAux2 != null || userAux3 != null) {
+                                                                                if (userAux != null) {
+                                                                                    System.out.println("\nEl dni ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                                if (userAux2 != null) {
+                                                                                    System.out.println("\nEl nombre de usuario ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                                if (userAux3 != null) {
+                                                                                    System.out.println("\nEl e-mail ya se encuentra registrado en la base de datos.\n");
+                                                                                }
+                                                                            } else {
+                                                                                System.out.println("\nAdministrador registrado correctamente.\n");
+                                                                                listUser.addUser(administratorNew);
+                                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+
+                                                                                quit = true;
+                                                                            }
+                                                                        } while (quit);
+                                                                    }
+                                                                    case 0 -> {
+                                                                        System.out.println("\n");
+                                                                    }
+                                                                    default -> System.out.println("\nOpcion incorrecta.\n");
+                                                                }
+
+                                                            } catch (InputMismatchException e) {
+                                                                System.out.println("\nSe debe ingresar un numero.\n");
+                                                                scanner.next();
+                                                            }
+                                                        }
+                                                        while (option != 0);
+                                                    }
+                                                }
+                                                case 12 -> {
+                                                    if(user instanceof Administrator) {
+                                                        System.out.println("Perfil del administrador.\n");
+                                                        System.out.println(user.toString());
+                                                    }
+                                                }
+                                                case 13 -> {
+                                                    if(user instanceof Administrator) {
+                                                        System.out.println("Modificar datos: ");
+                                                        listUser.userModify(user.getDni());
+                                                        listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                    }
+                                                }
+                                                case 14 -> {
+                                                    if(user instanceof Administrator) {
+                                                        System.out.println("Back up");
 
 
 
+                                                    }
+
+                                                }
+                                                case 0 -> {
+                                                    System.out.println("\n");
+                                                    quit= true;
+                                                }
+                                                default -> System.out.println("\nOpcion incorrecta.\n");
                                             }
-                                            case 0->{
-                                                quit= true;
-                                            }
-                                            default -> System.out.println("\nOpcion incorrecta.\n");
-                                        }
+                                        }while (option!=0 && !quit);
                                     }
                                     catch (InputMismatchException e) {
                                         System.out.println("\nSe debe ingresar un numero.\n");
