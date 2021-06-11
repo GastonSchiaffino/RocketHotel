@@ -22,6 +22,8 @@ public class Administrator extends Staff{
         this.setName(scanner.nextLine());
         System.out.println("Apellido: ");
         this.setSurname(scanner.nextLine());
+        System.out.println("DNI: ");
+        this.setDni(scanner.nextLine());
         System.out.println("Género: ");
         this.setGender(scanner.nextLine());;
         System.out.println("País de Origen: ");

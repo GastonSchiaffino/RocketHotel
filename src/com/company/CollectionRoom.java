@@ -1,6 +1,7 @@
 package com.company;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,6 @@ public class CollectionRoom implements FileRocketHotel {
         }
     }
 
-
     public void showListRoom(){
         for (Room x: listRoom) {
             System.out.println(x.toString());
@@ -59,7 +59,7 @@ public class CollectionRoom implements FileRocketHotel {
         }
     }
     public List<Room> searchForCapacity(int capacity){
-        List<Room> rooms=null;
+        List<Room> rooms = new ArrayList<>();
         for(Room x: listRoom){
             if(x.getCapacity()==capacity){
                 rooms.add(x);
@@ -121,10 +121,10 @@ public class CollectionRoom implements FileRocketHotel {
     @Override
     public void read(File file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        List<Room> rooms= new ArrayList<>();
         if(file.length()>0)
             listRoom = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Room.class));
     }
-
 
     @Override
     public void write(File file)  throws IOException {

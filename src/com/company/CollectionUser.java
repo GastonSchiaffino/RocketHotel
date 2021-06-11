@@ -162,6 +162,12 @@ public class CollectionUser {
         }
     }
 
+    public void showAll(){
+        for (User x:listUser) {
+            System.out.println(x.toString());
+        }
+    }
+
     public void showListClient(){
         for (User x:listUser) {
             if(x instanceof Client){
@@ -188,34 +194,49 @@ public class CollectionUser {
 
     public  void write(File fileAdmin,File fileRecep, File fileClient) throws  IOException{
         ObjectMapper mapper = new ObjectMapper();
+        List<Administrator> listAdministrator =new ArrayList<>();
+        List<Receptionist> listReceptionist =new ArrayList<>();
+        List<Client> listClient =new ArrayList<>();
+
         for(User x:listUser) {
             if(x instanceof  Administrator) {
-                List<Administrator> listAdministrator = new ArrayList();
-                listAdministrator.add((Administrator) x);
-                mapper.writeValue(fileAdmin,listAdministrator);
+                listAdministrator.add((Administrator)x);
             }else if(x instanceof  Receptionist){
-                List<Receptionist> listReceptionist = new ArrayList();
                 listReceptionist.add((Receptionist)x);
-                mapper.writeValue(fileRecep,listReceptionist);
             }else if (x instanceof  Client){
-                List<Client> listClient = new ArrayList();
-                listClient.add((Client)x);
-                mapper.writeValue(fileClient, listClient);
+                listClient.add((Client) x);
             }
         }
+        mapper.writeValue(fileAdmin,listAdministrator);
+        mapper.writeValue(fileRecep,listReceptionist);
+        mapper.writeValue(fileClient, listClient);
+
+        /*ObjectMapper mapper = new ObjectMapper();
+        for(User x:listUser) {
+            if(x instanceof  Administrator) {
+                Administrator administrator= (Administrator)x;
+                mapper.writeValue(fileAdmin, administrator);
+            }else if(x instanceof  Receptionist){
+                Receptionist receptionist= (Receptionist) x;
+                mapper.writeValue(fileRecep, receptionist);
+            }else if (x instanceof  Client){
+                Client client= (Client) x;
+                mapper.writeValue(fileClient, client);
+            }
+        }*/
     }
 
     public void read(File fileAdmin,File fileRecep, File fileClient) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper= new ObjectMapper();
         List<Administrator> listAdministrator = new ArrayList();
         List<Receptionist> listReceptionist = new ArrayList();
         List<Client> listClient = new ArrayList();
         if(fileAdmin.length()>0)
             listAdministrator = mapper.readValue(fileAdmin, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Administrator.class));
         if(fileRecep.length()>0)
-            listAdministrator = mapper.readValue(fileRecep, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Receptionist.class));
+            listReceptionist = mapper.readValue(fileRecep, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Receptionist.class));
         if(fileClient.length()>0)
-            listAdministrator = mapper.readValue(fileClient, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Client.class));
+            listClient = mapper.readValue(fileClient, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Client.class));
 
         listUser.addAll(listAdministrator);
         listUser.addAll(listReceptionist);

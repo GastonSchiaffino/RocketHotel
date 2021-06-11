@@ -28,7 +28,7 @@ public class Client extends User  {
 
     //Metodos
     public String toString(){
-        return super.toString() + "VIP: " + this.vip;
+        return super.toString() + "\nVIP: " + this.vip;
     }
 
     @Override
@@ -39,6 +39,8 @@ public class Client extends User  {
         this.setName(scanner.nextLine());
         System.out.println("Apellido: ");
         this.setSurname(scanner.nextLine());
+        System.out.println("DNI: ");
+        this.setDni(scanner.nextLine());
         System.out.println("Género: ");
         this.setGender(scanner.nextLine());;
         System.out.println("País de Origen: ");
