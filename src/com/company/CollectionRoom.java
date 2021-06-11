@@ -1,31 +1,16 @@
 package com.company;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class CollectionRoom {
+public class CollectionRoom implements FileRocketHotel {
     ///Atributos
-    public List<Room> listRoom = new ArrayList<>();
-
-    ///Constructores
-    public CollectionRoom(){
-    }
-
-    public CollectionRoom(List<Room> collectionRoom) {
-        this.listRoom = collectionRoom;
-    }
-
-    ///Getter and Setter
-
-
-    public List<Room> getListRoom() {
-        return listRoom;
-    }
-
-    public void setListRoom(List<Room> listRoom) {
-        this.listRoom = listRoom;
-    }
+    List<Room> listRoom = new ArrayList<>();
 
     ///Metodos
     public void loadRooms(){
@@ -72,6 +57,15 @@ public class CollectionRoom {
             if(x.getCapacity()==capacity)
                 System.out.println(x.toString());
         }
+    }
+    public List<Room> searchForCapacity(int capacity){
+        List<Room> rooms=null;
+        for(Room x: listRoom){
+            if(x.getCapacity()==capacity){
+                rooms.add(x);
+            }
+        }
+        return rooms;
     }
 
     public Room searchRoom(int idRoom){
@@ -122,5 +116,19 @@ public class CollectionRoom {
 
             }
         }
+    }
+
+    @Override
+    public void read(File file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        if(file.length()>0)
+            listRoom = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Room.class));
+    }
+
+
+    @Override
+    public void write(File file)  throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(file, listRoom);
     }
 }

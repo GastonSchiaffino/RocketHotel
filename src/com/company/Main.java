@@ -1,7 +1,5 @@
 package com.company;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -14,9 +12,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static Object TypeReference;
-    private static Object List;
-
     public static void main(String[] args) throws IOException {
         ///Menu
         CollectionUser listUser = new CollectionUser();
@@ -24,41 +19,40 @@ public class Main {
         CollectionReservation listReservation= new CollectionReservation();
         CollectionConsumption listConsumption= new CollectionConsumption();
 
-
-        File fileUser = new File("user_rockethotel.json");
+        File fileAdmin = new File("Admin_rockethotel.json");
+        File fileReceptionist = new File("Receptionist_rockethotel.json");
+        File fileClient = new File("Client_rockethotel.json");
         File fileRoom = new File("room_rockethotel.json");
         File fileReservation = new File("reservation_rockethotel.json");
         File fileConsumption = new File("consumption_rockethotel.json");
-        ObjectMapper mapper= new ObjectMapper();
+
 
         File fileAdministrativo = new File("backup_rockethotel.json");
-        ObjectMapper mapperAdministrativo= new ObjectMapper();
 
-        if(!fileUser.exists() && !fileRoom.exists() && !fileReservation.exists() && !fileConsumption.exists()) {
-            fileUser.createNewFile();
+        if(!fileAdmin.exists() && !fileRoom.exists() && !fileReservation.exists() && !fileConsumption.exists() && !fileReceptionist.exists() && !fileClient.exists()) {
+            fileAdmin.createNewFile();
+            fileReceptionist.createNewFile();
+            fileClient.createNewFile();
             fileRoom.createNewFile();
             fileReservation.createNewFile();
             fileConsumption.createNewFile();
+            Administrator administratorPrincipal = new Administrator("admin", "admin", "12345", "indefinido", "argentina", "Rocket Hotel", "admin", "admin", "admin@gmail.com", true, 0, 0);
+            listUser.addUser(administratorPrincipal);
             listRoom.loadRooms();
             listConsumption.loadConsumption();
-            mapper.writeValue(fileRoom, listRoom);
-            mapper.writeValue(fileConsumption, listConsumption);
-        }
 
-        else {
-            if(fileUser.length()>0)
-                listUser = mapper.readValue(fileUser, CollectionUser.class);
-            if(fileRoom.length()>0)
-                listRoom= mapper.readValue(fileRoom, CollectionRoom.class);
-            if(fileReservation.length()>0)
-                listReservation = mapper.readValue(fileReservation, CollectionReservation.class);
-            if(fileConsumption.length()>0)
-                listConsumption= mapper.readValue(fileConsumption, CollectionConsumption.class);
+            listRoom.write(fileRoom);
+            listConsumption.write(fileConsumption);
+            listUser.write(fileAdmin, fileReceptionist, fileClient);
+        } else {
+            listUser.read(fileAdmin,fileReceptionist,fileClient);
+            listRoom.read(fileRoom);
+            listReservation.read(fileReservation);
+            listConsumption.read(fileConsumption);
         }
 
         Scanner scanner = new Scanner(System.in);
 
-        Administrator administratorPrincipal= new Administrator("admin", "admin", "12345", "idefinido", "argentina", "Rocket Hotel", "admin", "admin", "admin@gmail.com", true, 0, 0);
         User user= new User();
 
         char character = 0;
@@ -123,7 +117,7 @@ public class Main {
                                                                 String entry = scanner.nextLine();
                                                                 System.out.println("\nIngrese la fecha de egreso: ");
                                                                 String exit = scanner.nextLine();
-                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom, LocalDate.parse(entry), LocalDate.parse(exit), option);
+                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
                                                                 for (Room x : roomsAvailable) {
                                                                     System.out.println(x.toString());
                                                                 }
@@ -191,7 +185,7 @@ public class Main {
                                                 case 7 -> {
                                                     System.out.println("Modificar datos: ");
                                                     listUser.userModify(user.getDni());
-                                                    mapper.writeValue(fileUser, listUser);
+                                                    //mapper.writeValue(fileUser, listUser);
                                                 }
                                                 case 0 -> {
                                                     System.out.println("\n");
@@ -313,7 +307,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
-                                                            mapper.writeValue(fileUser, listUser);
+                                                           // mapper.writeValue(fileUser, listUser);
                                                         }
                                                         character = 'n';
                                                     }
@@ -334,7 +328,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
-                                                            mapper.writeValue(fileUser, listUser);
+                                                           // mapper.writeValue(fileUser, listUser);
                                                         }
                                                         character = 'n';
                                                     }
@@ -355,7 +349,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
-                                                            mapper.writeValue(fileUser, listUser);
+                                                           // mapper.writeValue(fileUser, listUser);
                                                         }
                                                         character = 'n';
                                                     }
@@ -469,7 +463,7 @@ public class Main {
                                                                 String entry = scanner.nextLine();
                                                                 System.out.println("\nIngrese la fecha de egreso: ");
                                                                 String exit = scanner.nextLine();
-                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom, LocalDate.parse(entry), LocalDate.parse(exit), option);
+                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
                                                                 for (Room x : roomsAvailable) {
                                                                     System.out.println(x.toString());
                                                                 }
@@ -607,7 +601,7 @@ public class Main {
                                             case 13->{
                                                 System.out.println("Modificar datos: ");
                                                 listUser.userModify(user.getDni());
-                                                mapper.writeValue(fileUser, listUser);
+                                                //mapper.writeValue(fileUser, listUser);
                                             }
                                             case 14->{
                                                 System.out.println("Back up");
