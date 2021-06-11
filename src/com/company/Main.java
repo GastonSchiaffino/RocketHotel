@@ -29,27 +29,50 @@ public class Main {
 
         File fileAdministrativo = new File("backup_rockethotel.json");
 
-        if(!fileAdmin.exists() && !fileRoom.exists() && !fileReservation.exists() && !fileConsumption.exists() && !fileReceptionist.exists() && !fileClient.exists()) {
+        if(!fileAdmin.exists()) {
             fileAdmin.createNewFile();
-            fileReceptionist.createNewFile();
-            fileClient.createNewFile();
-            fileRoom.createNewFile();
-            fileReservation.createNewFile();
-            fileConsumption.createNewFile();
             Administrator administratorPrincipal = new Administrator("admin", "admin", "12345", "indefinido", "argentina", "Rocket Hotel", "admin", "admin", "admin@gmail.com", true, 0, 0);
             listUser.addUser(administratorPrincipal);
-            listRoom.loadRooms();
-            listConsumption.loadConsumption();
-
-            listRoom.write(fileRoom);
-            listConsumption.write(fileConsumption);
             listUser.write(fileAdmin, fileReceptionist, fileClient);
-        } else {
-            listUser.read(fileAdmin,fileReceptionist,fileClient);
-            listRoom.read(fileRoom);
-            listReservation.read(fileReservation);
-            listConsumption.read(fileConsumption);
         }
+        else
+            listUser.read(fileAdmin,fileReceptionist,fileClient);
+
+        if(!fileReceptionist.exists()) {
+            fileReceptionist.createNewFile();
+            listUser.write(fileAdmin,fileReceptionist,fileClient);
+        }
+        else
+            listUser.read(fileAdmin,fileReceptionist,fileClient);
+
+        if(!fileClient.exists()) {
+            fileClient.createNewFile();
+            listUser.write(fileAdmin,fileReceptionist,fileClient);
+        }
+        else
+            listUser.read(fileAdmin,fileReceptionist,fileClient);
+
+        if(!fileRoom.exists()) {
+            fileRoom.createNewFile();
+            listRoom.loadRooms();
+            listRoom.write(fileRoom);
+        }
+        else
+            listRoom.read(fileRoom);
+
+        if(!fileReservation.exists()) {
+            fileReservation.createNewFile();
+        }
+        else
+            listReservation.read(fileReservation);
+
+        if(!fileConsumption.exists()) {
+            fileConsumption.createNewFile();
+            listConsumption.loadConsumption();
+            listConsumption.write(fileConsumption);
+        }
+        else
+            listConsumption.read(fileConsumption);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -129,7 +152,7 @@ public class Main {
                                                                             System.out.println("\nReserva realizada");
                                                                             Reservation reservationDone= new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false);
                                                                             listReservation.addReservation(reservationDone);
-                                                                            mapper.writeValue(fileReservation, listReservation);
+                                                                            listReservation.write(fileReservation);
                                                                             quit = true;
                                                                         } else {
                                                                             System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
@@ -171,7 +194,7 @@ public class Main {
                                                         if (reservation != null) {
                                                             listReservation.cancelledReservartion(option);
                                                             System.out.println("\nReserva cancelada.");
-                                                            mapper.writeValue(fileReservation, listReservation);
+                                                            listReservation.write(fileReservation);
                                                         } else {
                                                             System.out.println("El numero de reserva ingresado es incorrecto. Presione 's' para volver a intentarlo o cualquier otra tecla para salir.\n");
                                                             character = scanner.next().charAt(0);
@@ -185,7 +208,7 @@ public class Main {
                                                 case 7 -> {
                                                     System.out.println("Modificar datos: ");
                                                     listUser.userModify(user.getDni());
-                                                    //mapper.writeValue(fileUser, listUser);
+                                                    listUser.write(fileAdmin, fileReceptionist, fileClient);
                                                 }
                                                 case 0 -> {
                                                     System.out.println("\n");
@@ -307,7 +330,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
-                                                           // mapper.writeValue(fileUser, listUser);
+                                                            listUser.write(fileAdmin, fileReceptionist, fileClient);
                                                         }
                                                         character = 'n';
                                                     }
@@ -328,7 +351,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
-                                                           // mapper.writeValue(fileUser, listUser);
+                                                            listUser.write(fileAdmin, fileReceptionist, fileClient);
                                                         }
                                                         character = 'n';
                                                     }
@@ -349,7 +372,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listUser.userModify(textInput);
-                                                           // mapper.writeValue(fileUser, listUser);
+                                                            listUser.write(fileAdmin, fileReceptionist, fileClient);
                                                         }
                                                         character = 'n';
                                                     }
@@ -370,7 +393,7 @@ public class Main {
                                                         character= scanner.next().charAt(0);
                                                         if(character=='m'){
                                                             listRoom.roomModify(option);
-                                                            mapper.writeValue(fileRoom, listRoom);
+                                                            listRoom.write(fileRoom);
                                                         }
                                                         character = 'n';
                                                     }
@@ -395,7 +418,7 @@ public class Main {
                                                             System.out.println("Ingrese el nuevo precio del producto: ");
                                                             double price = scanner.nextInt();
                                                             listConsumption.modifyPriceConsumption(option, price);
-                                                            mapper.writeValue(fileConsumption, listConsumption);
+                                                            listConsumption.write(fileConsumption);
                                                             character= 'n';
                                                         }
                                                     }
@@ -477,7 +500,7 @@ public class Main {
                                                                             Reservation reservationDone= new Reservation(dniClient, option, LocalDate.parse(entry), LocalDate.parse(exit), false);
                                                                             System.out.println("\nReserva realizada");
                                                                             listReservation.addReservation(reservationDone);
-                                                                            mapper.writeValue(fileReservation, listReservation);
+                                                                            listReservation.write(fileReservation);
                                                                             quit = true;
                                                                         } else {
                                                                             System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
@@ -601,7 +624,7 @@ public class Main {
                                             case 13->{
                                                 System.out.println("Modificar datos: ");
                                                 listUser.userModify(user.getDni());
-                                                //mapper.writeValue(fileUser, listUser);
+                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
                                             }
                                             case 14->{
                                                 System.out.println("Back up");
