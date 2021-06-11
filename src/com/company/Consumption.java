@@ -63,4 +63,5 @@ public class Consumption {
     public String toString(){
         return this.idConsumption + ".  " + this.description + "  $" + this.price;
     }
+
 }

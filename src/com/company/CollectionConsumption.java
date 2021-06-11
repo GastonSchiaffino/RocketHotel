@@ -1,29 +1,15 @@
 package com.company;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectionConsumption {
+public class CollectionConsumption implements FileRocketHotel{
     ///Atributos
     List<Consumption> listConsumption = new ArrayList<>();
-
-
-    ///Constructores
-    public CollectionConsumption(){
-    }
-    public CollectionConsumption(List<Consumption> listConsumption){
-        this.listConsumption=listConsumption;
-    }
-
-    ///Getter and Setter
-
-    public List<Consumption> getListConsumption() {
-        return listConsumption;
-    }
-
-    public void setListConsumption(List<Consumption> listConsumption) {
-        this.listConsumption = listConsumption;
-    }
 
     ///Metodos
 
@@ -80,4 +66,19 @@ public class CollectionConsumption {
             System.out.println(x.toString());
         }
     }
+
+    @Override
+    public void read(File file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        if(file.length()>0)
+            listConsumption = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Consumption.class));
+        }
+
+    @Override
+    public void write(File fileConsumption) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(fileConsumption, listConsumption);
+        }
 }
+
+

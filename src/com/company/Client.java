@@ -3,7 +3,7 @@ package com.company;
 import java.util.List;
 import java.util.Scanner;
 
-public class Client extends User implements ReservationStatus,Discount {
+public class Client extends User  {
     ///Atributos
     boolean vip;
 

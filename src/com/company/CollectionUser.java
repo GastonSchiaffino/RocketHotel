@@ -1,29 +1,17 @@
 package com.company;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class CollectionUser {
     ///Atributos
-    private List<User> listUser = new ArrayList<>();
-
-    ///Constructores
-    public CollectionUser(){
-    }
-
-    public CollectionUser(List<User> listUser) {
-        this.listUser = listUser;
-    }
-
-    ///Getter and Setter
-    public List<User> getListUser() {
-        return listUser;
-    }
-
-    public void setListUser(List<User> listUser) {
-        this.listUser = listUser;
-    }
+     List<User> listUser = new ArrayList<>();
 
     ///Metodos
     public User loginUser(String userName, String password){
@@ -196,6 +184,42 @@ public class CollectionUser {
                 System.out.println(x.toString());
             }
         }
+    }
+
+    public  void write(File fileAdmin,File fileRecep, File fileClient) throws  IOException{
+        ObjectMapper mapper = new ObjectMapper();
+        for(User x:listUser) {
+            if(x instanceof  Administrator) {
+                List<Administrator> listAdministrator = new ArrayList();
+                listAdministrator.add((Administrator) x);
+                mapper.writeValue(fileAdmin,listAdministrator);
+            }else if(x instanceof  Receptionist){
+                List<Receptionist> listReceptionist = new ArrayList();
+                listReceptionist.add((Receptionist)x);
+                mapper.writeValue(fileRecep,listReceptionist);
+            }else if (x instanceof  Client){
+                List<Client> listClient = new ArrayList();
+                listClient.add((Client)x);
+                mapper.writeValue(fileClient, listClient);
+            }
+        }
+    }
+
+    public void read(File fileAdmin,File fileRecep, File fileClient) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<Administrator> listAdministrator = new ArrayList();
+        List<Receptionist> listReceptionist = new ArrayList();
+        List<Client> listClient = new ArrayList();
+        if(fileAdmin.length()>0)
+            listAdministrator = mapper.readValue(fileAdmin, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Administrator.class));
+        if(fileRecep.length()>0)
+            listAdministrator = mapper.readValue(fileRecep, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Receptionist.class));
+        if(fileClient.length()>0)
+            listAdministrator = mapper.readValue(fileClient, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Client.class));
+
+        listUser.addAll(listAdministrator);
+        listUser.addAll(listReceptionist);
+        listUser.addAll(listClient);
     }
 
 }

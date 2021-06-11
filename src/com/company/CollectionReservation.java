@@ -1,30 +1,16 @@
 package com.company;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectionReservation {
+public class CollectionReservation implements FileRocketHotel{
     ///Atributos
-    private List<Reservation> listReservation = new ArrayList<>();
-
-    ///Constructores
-    public CollectionReservation() {
-    }
-
-    public CollectionReservation(List<Reservation> listReservation) {
-        this.listReservation = listReservation;
-    }
-
-    ///Getter and Setter
-
-    public List<Reservation> getListReservation() {
-        return listReservation;
-    }
-
-    public void setListReservation(List<Reservation> listReservation) {
-        this.listReservation = listReservation;
-    }
+    List<Reservation> listReservation = new ArrayList<>();
 
     ///Metodos
     public void addReservation(Reservation reservation){
@@ -94,12 +80,11 @@ public class CollectionReservation {
     }
 
 
-    public List<Room> searchRoomsForReservation(CollectionRoom rooms, LocalDate ci, LocalDate co, int capacity) {
+    public List<Room> searchRoomsForReservation(List<Room> rooms, LocalDate ci, LocalDate co) {
         List<Room> suitables = new ArrayList<>();
         boolean save;
 
-        for (Room r : rooms.getListRoom()) {
-            if (capacity == r.getCapacity()) {
+        for (Room r : rooms) {
                 save = false;
                 for (Reservation x : listReservation) {
                     if (!x.isCancelled() && r.getIdRoom() == x.getIdRoom()) {
@@ -114,8 +99,20 @@ public class CollectionReservation {
                         suitables.add(r);
                     }
                 }
-            }
         }
         return suitables;
+    }
+
+    @Override
+    public void read(File file)  throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        if(file.length()>0)
+            listReservation = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Reservation.class));
+    }
+
+    @Override
+    public void write(File file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(file, listReservation);
     }
 }
