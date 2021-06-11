@@ -41,4 +41,9 @@ public class Administrator extends Staff{
         System.out.println("Antiguedad: ");
         this.setAntiquity(scanner.nextInt());
     }
+
+    @Override
+    public void calculatedSalary(int horas){
+        this.setSalary(horas * 400 * 30);
+    }
 }

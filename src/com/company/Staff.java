@@ -1,6 +1,7 @@
 package com.company;
 
-import java.util.Scanner;
+import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Staff extends User{
     ///Atributos
@@ -50,6 +51,12 @@ public class Staff extends User{
     public void register(){
     }
 
+    public int calculatedAntiquity(LocalDate alta) {
+        LocalDate now = LocalDate.now();
+        return (int)DAYS.between(alta, now) / 365;
+    }
 
-
+    public void calculatedSalary(int horas){
+    }
 }
+
