@@ -42,4 +42,8 @@ public class Receptionist extends Staff{
         this.setAntiquity(scanner.nextInt());
     }
 
+    @Override
+    public void calculatedSalary(int horas){
+         this.setSalary(horas * 250 * 30);
+    }
 }
