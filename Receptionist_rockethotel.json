@@ -1,1 +1,1 @@
-[]
+[{"name":"lali","surname":"esposito","dni":"36876333","gender":"femenino","origin":"argentina","address":"san martin 1422","userName":"lali","password":"123","emailAddress":"lali@gmail.com","permissionUser":false,"salary":37500.0,"antiquity":5},{"name":"maria","surname":"becerra","dni":"22222222","gender":"femenino","origin":"argentina","address":"san lorenzo 10","userName":"acaramelado","password":"123","emailAddress":"becerra@hotmail.com","permissionUser":false,"salary":67500.0,"antiquity":9}]

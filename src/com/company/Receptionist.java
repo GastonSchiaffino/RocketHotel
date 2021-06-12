@@ -1,5 +1,7 @@
 package com.company;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Receptionist extends Staff{
@@ -14,9 +16,15 @@ public class Receptionist extends Staff{
     }
 
     ///Metodos
+    public String toString(){
+        return super.toString() + "\nSalario: " + getSalary() + "\nAntiguedad: " + getAntiquity();
+    }
+
     @Override
     public void register(){
         Scanner scanner = new Scanner(System.in);
+        int hours;
+        String day;
 
         System.out.println("Nombre: ");
         this.setName(scanner.nextLine());
@@ -36,12 +44,16 @@ public class Receptionist extends Staff{
         this.setEmailAddress(scanner.nextLine());
         System.out.println("Nombre de usuario: ");
         this.setUserName(scanner.nextLine());
-        System.out.println("Permiso de usuario: ");
+        //System.out.println("Permiso de usuario: ");
         this.setPermissionUser(false);
-        System.out.println("Salario: ");
-        this.setSalary(scanner.nextDouble());
-        System.out.println("Antiguedad: ");
-        this.setAntiquity(scanner.nextInt());
+        System.out.println("Horas de trabajo por dia: ");
+        hours= scanner.nextInt();
+        calculatedSalary(hours);
+        System.out.println("Salario: " + this.getSalary());
+        System.out.println("Fecha de ingreso del empleado(formato: xx/xx/xxxx): ");
+        day= scanner.next();
+        this.setAntiquity(calculatedAntiquity(day));
+        System.out.println("Antiguedad: " + this.getAntiquity());
     }
 
     @Override

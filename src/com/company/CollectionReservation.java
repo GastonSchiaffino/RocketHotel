@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CollectionReservation implements FileRocketHotel{
     ///Atributos
@@ -80,24 +83,41 @@ public class CollectionReservation implements FileRocketHotel{
     }
 
 
-    public List<Room> searchRoomsForReservation(List<Room> rooms, LocalDate ci, LocalDate co) {
+    public List<Room> searchRoomsForReservation(List<Room> rooms, String ci, String co) {
         List<Room> suitables = new ArrayList<>();
         boolean save;
 
+
+
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+        LocalDate localDateCI;
+        LocalDate localDateCO;
+        try {
+            localDateCI = LocalDate.parse(ci, dateTimeFormatter);
+            localDateCO =  LocalDate.parse(co, dateTimeFormatter);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+
         for (Room r : rooms) {
                 save = false;
-                for (Reservation x : listReservation) {
-                    if (!x.isCancelled() && r.getIdRoom() == x.getIdRoom()) {
-                        if (x.getCheckIn().isBefore(ci) && x.getCheckOut().isAfter(co) ||
-                                ci.isBefore(x.getCheckIn()) && co.isAfter(x.getCheckOut()) ||
-                                co.isBefore(x.getCheckOut()) && co.isAfter(x.getCheckIn()) ||
-                                ci.isAfter(x.getCheckIn()) && ci.isBefore(x.getCheckOut())) {
-                            save = true;
+                if(!listReservation.isEmpty()) {
+                    for (Reservation x : listReservation) {
+                        if (!x.isCancelled() && r.getIdRoom() == x.getIdRoom()) {
+                            if (Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckIn())).isBefore(localDateCI) && Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckOut())).isAfter(localDateCO) ||
+                                    localDateCI.isBefore(Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckIn()))) && localDateCO.isAfter(Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckOut()))) ||
+                                    localDateCO.isBefore(Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckOut()))) && localDateCO.isAfter(Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckIn()))) ||
+                                    localDateCI.isAfter(Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckIn()))) && localDateCI.isBefore(Objects.requireNonNull(Reservation.stringToLocalDate(x.getCheckOut())))) {
+                                save = true;
+                            }
+                        }
+                        if (!save) {
+                            suitables.add(r);
                         }
                     }
-                    if (!save) {
-                        suitables.add(r);
-                    }
+                }
+                else {
+                    suitables.add(r);
                 }
         }
         return suitables;
