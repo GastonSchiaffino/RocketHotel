@@ -2,12 +2,14 @@ package com.company;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
-
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 public class Main {
@@ -27,7 +29,13 @@ public class Main {
         File fileConsumption = new File("consumption_rockethotel.json");
 
 
-        File fileAdministrativo = new File("backup_rockethotel.json");
+        File backupAdmin = new File("C:\\Users\\mosta\\Desktop\\FACULTAD\\Programacion III\\Practica Java\\RocketHotel\\backup\\backupadm.json");
+        File backupReceptionist = new File("C:\\Users\\mosta\\Desktop\\FACULTAD\\Programacion III\\Practica Java\\RocketHotel\\backup\\backupreceptionist.json");
+        File backupClient = new File("C:\\Users\\mosta\\Desktop\\FACULTAD\\Programacion III\\Practica Java\\RocketHotel\\backup\\backupclient.json");
+        File backupRoom = new File("C:\\Users\\mosta\\Desktop\\FACULTAD\\Programacion III\\Practica Java\\RocketHotel\\backup\\backuproom.json");
+        File backupReservation = new File("C:\\Users\\mosta\\Desktop\\FACULTAD\\Programacion III\\Practica Java\\RocketHotel\\backup\\backupreservation.json");
+        File backupConsumption = new File("C:\\Users\\mosta\\Desktop\\FACULTAD\\Programacion III\\Practica Java\\RocketHotel\\backup\\backupconsumption.json");
+
 
         if(!fileAdmin.exists()) {
             fileAdmin.createNewFile();
@@ -130,11 +138,11 @@ public class Main {
                                                         option = scanner.nextInt();
                                                         if (option > 0 && option < 5) {
                                                             do {
-                                                                System.out.println("\nIngrese la fecha de ingreso(xx/xx/xxxx): ");
+                                                                System.out.println("\nIngrese la fecha de ingreso(dd/mm/yyyy): ");
                                                                 String entry = scanner.next();
-                                                                System.out.println("\nIngrese la fecha de egreso(xx/xx/xxxx): ");
+                                                                System.out.println("\nIngrese la fecha de egreso(dd/mm/yyyy): ");
                                                                 String exit = scanner.next();
-                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
+                                                                List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), entry, exit);
                                                                 for (Room x : roomsAvailable) {
                                                                     System.out.println(x.toString());
                                                                 }
@@ -144,15 +152,16 @@ public class Main {
                                                                     for (Room x : roomsAvailable) {
                                                                         if (x.getIdRoom() == option) {
                                                                             System.out.println("\nReserva realizada");
-                                                                            Reservation reservationDone = new Reservation(user.getDni(), option, LocalDate.parse(entry), LocalDate.parse(exit), false);
+                                                                            Reservation reservationDone = new Reservation(user.getDni(), option, entry, exit, false);
                                                                             listReservation.addReservation(reservationDone);
                                                                             listReservation.write(fileReservation);
                                                                             quit = true;
-                                                                        } else {
-                                                                            System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
                                                                         }
                                                                     }
-                                                                } while (quit);
+                                                                    if(!quit){
+                                                                        System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
+                                                                    }
+                                                                } while (!quit);
                                                             }
                                                             while (!quit);
                                                         } else {
@@ -207,7 +216,7 @@ public class Main {
                                                 case 7 -> {
                                                     System.out.println("Modificar datos: ");
                                                     listUser.userModify(user.getDni());
-                                                    listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                    listUser.writeClient(fileClient);
                                                 }
                                                 case 0 -> {
                                                     System.out.println("\n");
@@ -221,9 +230,12 @@ public class Main {
                                         }
                                     }while (option!=0 && !quit);
                                 } else if (listUser.searchAdministrator(user.getDni())!=null || listUser.searchReceptionist(user.getDni())!=null) {
-                                    System.out.println("Miembro de staff: " + user.getUserName());
-                                    if(listUser.searchAdministrator(user.getDni())!=null) {
-                                        System.out.println("""
+                                    quit=false;
+                                    try{
+                                        do {
+                                            System.out.println("Miembro de staff: " + user.getUserName());
+                                            if(listUser.searchAdministrator(user.getDni())!=null) {
+                                                System.out.println("""
 
                                                 1)Ver habitaciones.
                                                 2)Ver reservas vigentes.
@@ -239,12 +251,13 @@ public class Main {
                                                 12)Ver perfil.
                                                 13)Modificar perfil.
                                                 14)Back up.
+                                                15)Restaurar datos a partir de su ultima copia de seguridad.
 
                                                 0)Salir.
                                                 """);
-                                    }
-                                    else {
-                                        System.out.println("""
+                                            }
+                                            else {
+                                                System.out.println("""
 
                                                 1)Ver habitaciones.
                                                 2)Ver reservas vigentes.
@@ -260,9 +273,7 @@ public class Main {
 
                                                 0)Salir.
                                                 """);
-                                    }
-                                    try{
-                                        do {
+                                            }
                                             option = scanner.nextInt();
                                             switch (option) {
                                                 case 1 -> {
@@ -331,7 +342,7 @@ public class Main {
                                                             character = scanner.next().charAt(0);
                                                             if (character == 'm') {
                                                                 listUser.userModify(textInput);
-                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                                listUser.writeClient(fileClient);
                                                             }
                                                             character = 'n';
                                                         }
@@ -352,7 +363,7 @@ public class Main {
                                                             character = scanner.next().charAt(0);
                                                             if (character == 'm') {
                                                                 listUser.userModify(textInput);
-                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                                listUser.writeAdmin(fileAdmin);
                                                             }
                                                             character = 'n';
                                                         }
@@ -373,7 +384,7 @@ public class Main {
                                                             character = scanner.next().charAt(0);
                                                             if (character == 'm') {
                                                                 listUser.userModify(textInput);
-                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                                listUser.writeRecep(fileReceptionist);
                                                             }
                                                             character = 'n';
                                                         }
@@ -426,6 +437,7 @@ public class Main {
                                                     }
                                                 }
                                                 case 9 -> {
+                                                    char exitList= 's';
                                                     do {
                                                         System.out.println("Listados:\n");
                                                         System.out.println("""
@@ -463,6 +475,9 @@ public class Main {
                                                                 }
                                                                 case 0 -> {
                                                                     System.out.println("\n");
+                                                                    option=1;
+                                                                    exitList= 'n';
+
                                                                 }
                                                                 default -> System.out.println("\nOpcion incorrecta.\n");
                                                             }
@@ -470,7 +485,7 @@ public class Main {
                                                             System.out.println("\nSe debe ingresar un numero.\n");
                                                             scanner.next();
                                                         }
-                                                    } while (option != 0);
+                                                    } while (exitList=='s');
 
                                                 }
                                                 case 10 -> {
@@ -486,7 +501,7 @@ public class Main {
                                                                     String entry = scanner.next();
                                                                     System.out.println("\nIngrese la fecha de egreso: ");
                                                                     String exit = scanner.next();
-                                                                    List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), LocalDate.parse(entry), LocalDate.parse(exit));
+                                                                    List<Room> roomsAvailable = listReservation.searchRoomsForReservation(listRoom.searchForCapacity(option), entry, exit);
                                                                     for (Room x : roomsAvailable) {
                                                                         System.out.println(x.toString());
                                                                     }
@@ -497,16 +512,17 @@ public class Main {
                                                                             if (x.getIdRoom() == option) {
                                                                                 System.out.println("\nIngrese el dni del cliente para asignar la reserva: ");
                                                                                 String dniClient = scanner.next();
-                                                                                Reservation reservationDone = new Reservation(dniClient, option, LocalDate.parse(entry), LocalDate.parse(exit), false);
+                                                                                Reservation reservationDone = new Reservation(dniClient, option, entry, exit, false);
                                                                                 System.out.println("\nReserva realizada");
                                                                                 listReservation.addReservation(reservationDone);
                                                                                 listReservation.write(fileReservation);
                                                                                 quit = true;
-                                                                            } else {
-                                                                                System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
                                                                             }
                                                                         }
-                                                                    } while (quit);
+                                                                        if(!quit){
+                                                                            System.out.println("\nLa habitacion seleccionada no se encuentra disponible.");
+                                                                        }
+                                                                    } while (!quit);
                                                                 }
                                                                 while (!quit);
                                                             } else {
@@ -551,7 +567,7 @@ public class Main {
                                                                             } else {
                                                                                 System.out.println("\nCliente registrado correctamente.\n");
                                                                                 listUser.addUser(clientNew);
-                                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                                                listUser.writeClient(fileClient);
 
                                                                                 quit = true;
                                                                             }
@@ -577,7 +593,7 @@ public class Main {
                                                                             } else {
                                                                                 System.out.println("\nRecepcionista registrado correctamente.\n");
                                                                                 listUser.addUser(receptionistNew);
-                                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                                                listUser.writeRecep(fileReceptionist);
 
                                                                                 quit = true;
                                                                             }
@@ -603,11 +619,11 @@ public class Main {
                                                                             } else {
                                                                                 System.out.println("\nAdministrador registrado correctamente.\n");
                                                                                 listUser.addUser(administratorNew);
-                                                                                listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                                                listUser.writeAdmin(fileAdmin);
 
                                                                                 quit = true;
                                                                             }
-                                                                        } while (quit);
+                                                                        } while (!quit);
                                                                     }
                                                                     case 0 -> {
                                                                         System.out.println("\n");
@@ -633,17 +649,32 @@ public class Main {
                                                     if(user instanceof Administrator) {
                                                         System.out.println("Modificar datos: ");
                                                         listUser.userModify(user.getDni());
-                                                        listUser.write(fileAdmin, fileReceptionist, fileClient);
+                                                        listUser.writeAdmin(fileAdmin);
                                                     }
                                                 }
                                                 case 14 -> {
-                                                    if(user instanceof Administrator) {
-                                                        System.out.println("Back up");
+                                                    if (user instanceof Administrator) {
+                                                        System.out.println("Back up realizado.\n");
 
-
-
+                                                        ((Administrator) user).fileToBackup(fileAdmin, backupAdmin);
+                                                        ((Administrator) user).fileToBackup(fileClient, backupClient);
+                                                        ((Administrator) user).fileToBackup(fileRoom, backupRoom);
+                                                        ((Administrator) user).fileToBackup(fileConsumption, backupConsumption);
+                                                        ((Administrator) user).fileToBackup(fileReceptionist, backupReceptionist);
+                                                        ((Administrator) user).fileToBackup(fileReservation, backupReservation);
                                                     }
+                                                }
+                                                case 15 ->{
+                                                    if (user instanceof Administrator) {
+                                                        System.out.println("Se restauro la ultima copia de seguridad.\n");
 
+                                                        ((Administrator) user).fileToBackup(backupAdmin, fileAdmin);
+                                                        ((Administrator) user).fileToBackup(backupClient, fileClient);
+                                                        ((Administrator) user).fileToBackup(backupRoom, fileRoom);
+                                                        ((Administrator) user).fileToBackup(backupConsumption, fileConsumption);
+                                                        ((Administrator) user).fileToBackup(backupReceptionist, fileReceptionist);
+                                                        ((Administrator) user).fileToBackup(backupReservation, fileReservation);
+                                                    }
                                                 }
                                                 case 0 -> {
                                                     System.out.println("\n");

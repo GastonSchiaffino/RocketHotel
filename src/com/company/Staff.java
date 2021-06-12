@@ -1,6 +1,9 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Staff extends User {
@@ -51,9 +54,17 @@ public class Staff extends User {
     public void register(){
     }
 
-    public int calculatedAntiquity(LocalDate alta) {
+    public int calculatedAntiquity(String day) {
         LocalDate now = LocalDate.now();
-        return (int)DAYS.between(alta, now) / 365;
+
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+        LocalDate localDate;
+        try {
+            localDate = LocalDate.parse(day, dateTimeFormatter);
+        } catch (DateTimeParseException e) {
+            return 0;
+        }
+        return (int)DAYS.between(localDate, now) / 365;
     }
 
     public void calculatedSalary(int horas){

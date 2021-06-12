@@ -111,45 +111,45 @@ public class CollectionUser {
             if(x.getDni().equals(dni)) {
                 do {
                     System.out.println("Ingrese la opcion que desea modificar: \n");
-                    System.out.println("1)Nombre.\n2)Apellido.\n3)DNI.\n4)Genero.\n5)Pais de origen.6)Direccion.\n7)Nombre de usuario.\n8)Constraseña.\n9)E-mail.\n\n0)Salir.\n\nOpcion: ");
+                    System.out.println("1)Nombre.\n2)Apellido.\n3)DNI.\n4)Genero.\n5)Pais de origen.\n6)Direccion.\n7)Nombre de usuario.\n8)Constraseña.\n9)E-mail.\n\n0)Salir.\n\nOpcion: ");
                     opcion = scanner.nextInt();
 
                     switch (opcion) {
                         case 1 -> {
                             System.out.println("Nombre: ");
-                            x.setName(scanner.nextLine());
+                            x.setName(scanner.next());
                         }
                         case 2 -> {
                             System.out.println("Apellido: ");
-                            x.setSurname(scanner.nextLine());
+                            x.setSurname(scanner.next());
                         }
                         case 3 -> {
                             System.out.println("DNI: ");
-                            x.setDni(scanner.nextLine());
+                            x.setDni(scanner.next());
                         }
                         case 4 -> {
                             System.out.println("Género: ");
-                            x.setGender(scanner.nextLine());
+                            x.setGender(scanner.next());
                         }
                         case 5 -> {
                             System.out.println("País de Origen: ");
-                            x.setOrigin(scanner.nextLine());
+                            x.setOrigin(scanner.next());
                         }
                         case 6 -> {
                             System.out.println("Dirección: ");
-                            x.setAddress(scanner.nextLine());
+                            x.setAddress(scanner.next());
                         }
                         case 7 -> {
                             System.out.println("Nombre de usuario: ");
-                            x.setUserName(scanner.nextLine());
+                            x.setUserName(scanner.next());
                         }
                         case 8 -> {
                             System.out.println("Contraseña: ");
-                            x.setPassword(scanner.nextLine());
+                            x.setPassword(scanner.next());
                         }
                         case 9 -> {
                             System.out.println("E-Mail: ");
-                            x.setEmailAddress(scanner.nextLine());
+                            x.setEmailAddress(scanner.next());
                         }
                         case 0 -> {
                             System.out.println("\n");
@@ -245,28 +245,28 @@ public class CollectionUser {
     }
 
 
-    public void writeClient (File fileRecep) throws IOException {
+    public void writeClient (File fileClient) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        List<Receptionist> listReceptionst = new ArrayList<>();
+        List<Client> listClient = new ArrayList<>();
 
 
         for (User x : listUser) {
-            if (x instanceof Receptionist) {
-                listReceptionst.add((Receptionist) x);
+            if (x instanceof Client) {
+                listClient.add((Client) x);
             }
         }
 
-        mapper.writeValue(fileRecep, listReceptionst);
+        mapper.writeValue(fileClient, listClient);
 
 
     }
 
-    public void readClient (File fileRecep) throws IOException {
+    public void readClient (File fileClient) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         List<Client> listClient;
 
-        if (fileRecep.length() > 0) {
-            listClient = mapper.readValue(fileRecep, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Receptionist.class));
+        if (fileClient.length() > 0) {
+            listClient = mapper.readValue(fileClient, mapper.getTypeFactory().constructCollectionType(ArrayList.class, Client.class));
             listUser.addAll(listClient);
         }
 

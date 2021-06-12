@@ -1,6 +1,8 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 public class Reservation {
@@ -9,15 +11,15 @@ public class Reservation {
     private int idRoom;
     private int reservationNumber;
     private static int reservationNumberNext= 1;
-    private LocalDate checkIn;
-    private LocalDate checkOut;
+    private String checkIn;
+    private String checkOut;
     private boolean cancelled;
 
     ///Constructores
     public Reservation(){
     }
 
-    public Reservation(String dni, int idRoom, LocalDate checkIn, LocalDate checkOut,boolean cancelled) {
+    public Reservation(String dni, int idRoom, String checkIn, String checkOut,boolean cancelled) {
         this.dni = dni;
         this.idRoom = idRoom;
         this.reservationNumber = reservationNumberNext;
@@ -52,19 +54,19 @@ public class Reservation {
         this.reservationNumber = reservationNumber;
     }
 
-    public LocalDate getCheckIn() {
+    public String getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(LocalDate checkIn) {
+    public void setCheckIn(String checkIn) {
         this.checkIn = checkIn;
     }
 
-    public LocalDate getCheckOut() {
+    public String getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(LocalDate checkOut) {
+    public void setCheckOut(String checkOut) {
         this.checkOut = checkOut;
     }
 
@@ -97,6 +99,17 @@ public class Reservation {
     public String toString(){
         return "Reserva: " +  "\n Dni de Cliente " +this.dni +  "Nro de Habitación: " +  this.idRoom +  "Nro de Reserva: " + this.reservationNumber +
                 "Hora de entrada: " +this.checkIn +  "Hora de Salida: " + this.checkOut;
+    }
+
+    public static LocalDate stringToLocalDate(String date) {
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+        LocalDate localDate;
+        try {
+            localDate = LocalDate.parse(date, dateTimeFormatter);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+        return localDate;
     }
 
 }
