@@ -120,6 +120,7 @@ public class Main {
                                                 5)Cancelar reserva.
                                                 6)Ver perfil.
                                                 7)Modificar perfil.
+                                                8)Consumir.
 
                                                 0)Salir.
                                                 """);
@@ -217,6 +218,16 @@ public class Main {
                                                     System.out.println("Modificar datos: ");
                                                     listUser.userModify(user.getDni());
                                                     listUser.writeClient(fileClient);
+                                                }
+                                                case 8->{
+                                                    System.out.println("Menu: ");
+                                                    listConsumption.showListConsumition();
+                                                    System.out.println("Ingrese el id de lo que desea consumir: ");
+                                                    option= scanner.nextInt();
+                                                    Consumption consumption;
+                                                    consumption= listConsumption.searchConsumption(option);
+                                                    System.out.println(consumption.toString());
+
                                                 }
                                                 case 0 -> {
                                                     System.out.println("\n");
